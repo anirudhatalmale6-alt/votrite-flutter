@@ -1,0 +1,425 @@
+import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:provider/provider.dart';
+import '../models/candidate.dart';
+import '../models/race.dart';
+import '../providers/voting_provider.dart';
+import '../services/tts_service.dart';
+import '../theme.dart';
+import 'party_screen.dart';
+import 'proposition_screen.dart';
+import 'review_screen.dart';
+
+class RaceScreen extends StatefulWidget {
+  const RaceScreen({super.key});
+
+  @override
+  State<RaceScreen> createState() => _RaceScreenState();
+}
+
+class _RaceScreenState extends State<RaceScreen> {
+  final _focusNode = FocusNode();
+  List<Candidate> _candidates = [];
+  bool _loading = true;
+  int _highlightedIndex = -1;
+  int? _partyId;
+
+  @override
+  void initState() {
+    super.initState();
+    _loadCandidates();
+  }
+
+  @override
+  void dispose() {
+    _focusNode.dispose();
+    super.dispose();
+  }
+
+  Future<void> _loadCandidates() async {
+    final provider = context.read<VotingProvider>();
+    final race = provider.currentRace;
+    if (race == null) return;
+
+    if (race.raceType == 'P') {
+      if (!mounted) return;
+      final result = await Navigator.push<Map<String, dynamic>>(
+        context,
+        MaterialPageRoute(builder: (_) => const PartyScreen()),
+      );
+      if (result != null) {
+        _partyId = result['party_id'] as int;
+      }
+    }
+
+    setState(() => _loading = true);
+    try {
+      final candidates = await provider.fetchCandidates(race.raceId, partyId: _partyId);
+
+      final existingResult = provider.raceResults[provider.currentRaceIndex];
+      for (final c in candidates) {
+        final match = existingResult.selectedCandidates
+            .where((sc) => sc.candidateId == c.candidateId);
+        if (match.isNotEmpty) {
+          c.isSelected = true;
+          c.rankValue = match.first.rankValue;
+        }
+      }
+
+      setState(() {
+        _candidates = candidates;
+        _loading = false;
+        _highlightedIndex = -1;
+      });
+      _announceRace(race);
+    } catch (e) {
+      setState(() => _loading = false);
+    }
+  }
+
+  void _announceRace(Race race) {
+    final tts = TtsService();
+    final selected = _candidates.where((c) => c.isSelected).length;
+    tts.speak(
+      '${race.raceName}. '
+      'Select ${race.minNumOfVotes} to ${race.maxNumOfVotes} candidates. '
+      '$selected selected so far. '
+      'Press F to select or deselect, arrow keys to navigate, J when done.',
+    );
+  }
+
+  void _toggleCandidate(int index) {
+    final provider = context.read<VotingProvider>();
+    final race = provider.currentRace!;
+
+    setState(() {
+      if (_candidates[index].isSelected) {
+        _candidates[index].isSelected = false;
+        _candidates[index].rankValue = 0;
+        TtsService().speak('Deselected ${_candidates[index].candidateName}.');
+      } else {
+        final selectedCount = _candidates.where((c) => c.isSelected).length;
+        if (selectedCount >= race.maxNumOfVotes) {
+          TtsService().speak(
+            'Maximum ${race.maxNumOfVotes} candidates allowed. Deselect one first.',
+          );
+          return;
+        }
+        _candidates[index].isSelected = true;
+        if (race.raceType == 'R') {
+          _candidates[index].rankValue = selectedCount + 1;
+        }
+        TtsService().speak('Selected ${_candidates[index].candidateName}.');
+      }
+    });
+  }
+
+  void _saveAndProceed() {
+    final provider = context.read<VotingProvider>();
+    final race = provider.currentRace!;
+    final selected = _candidates.where((c) => c.isSelected).toList();
+
+    if (selected.length < race.minNumOfVotes) {
+      TtsService().speak(
+        'Please select at least ${race.minNumOfVotes} candidates.',
+      );
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Select at least ${race.minNumOfVotes} candidate(s)')),
+      );
+      return;
+    }
+
+    provider.saveRaceResult(
+      provider.currentRaceIndex,
+      partyId: _partyId,
+      partyName: null,
+      candidates: selected,
+    );
+
+    if (provider.currentRaceIndex < provider.races.length - 1) {
+      provider.advanceRace();
+      setState(() {
+        _candidates = [];
+        _loading = true;
+        _highlightedIndex = -1;
+        _partyId = null;
+      });
+      _loadCandidates();
+    } else {
+      if (provider.propositions.isNotEmpty) {
+        Navigator.push(context, MaterialPageRoute(builder: (_) => const PropositionScreen()));
+      } else {
+        Navigator.push(context, MaterialPageRoute(builder: (_) => const ReviewScreen()));
+      }
+    }
+  }
+
+  void _showWriteInDialog() {
+    final provider = context.read<VotingProvider>();
+    final race = provider.currentRace!;
+    final writeInsUsed = _candidates.where((c) => c.candidateName.contains('(Write-In)')).length;
+    if (writeInsUsed >= race.maxNumOfWriteIns) {
+      TtsService().speak('Maximum write-in candidates reached.');
+      return;
+    }
+
+    final controller = TextEditingController();
+    showDialog(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        title: const Text('Write-In Candidate'),
+        content: TextField(
+          controller: controller,
+          autofocus: true,
+          decoration: const InputDecoration(
+            hintText: 'Enter candidate name',
+            border: OutlineInputBorder(),
+          ),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(ctx),
+            child: const Text('Cancel'),
+          ),
+          ElevatedButton(
+            onPressed: () async {
+              final name = controller.text.trim();
+              if (name.isEmpty) return;
+              Navigator.pop(ctx);
+              final success = await provider.addWriteInCandidate(
+                race.raceId,
+                name,
+                partyId: _partyId,
+              );
+              if (success) {
+                _loadCandidates();
+              }
+            },
+            child: const Text('Add'),
+          ),
+        ],
+      ),
+    );
+  }
+
+  KeyEventResult _handleKey(FocusNode node, KeyEvent event) {
+    if (event is! KeyDownEvent) return KeyEventResult.ignored;
+    final key = event.logicalKey;
+
+    if (key == LogicalKeyboardKey.keyF) {
+      if (_candidates.isEmpty) return KeyEventResult.handled;
+      if (_highlightedIndex < 0) {
+        setState(() => _highlightedIndex = 0);
+        TtsService().speak(_candidates[0].candidateName);
+      } else {
+        _toggleCandidate(_highlightedIndex);
+      }
+      return KeyEventResult.handled;
+    }
+    if (key == LogicalKeyboardKey.keyJ || key == LogicalKeyboardKey.enter) {
+      _saveAndProceed();
+      return KeyEventResult.handled;
+    }
+    if (key == LogicalKeyboardKey.keyD || key == LogicalKeyboardKey.escape) {
+      Navigator.maybePop(context);
+      return KeyEventResult.handled;
+    }
+    if (key == LogicalKeyboardKey.keyK || key == LogicalKeyboardKey.arrowDown) {
+      if (_candidates.isNotEmpty) {
+        setState(() {
+          _highlightedIndex = (_highlightedIndex + 1).clamp(0, _candidates.length - 1);
+        });
+        final c = _candidates[_highlightedIndex];
+        final status = c.isSelected ? 'Selected' : 'Not selected';
+        TtsService().speak('${c.candidateName}. ${c.partyName}. $status.');
+      }
+      return KeyEventResult.handled;
+    }
+    if (key == LogicalKeyboardKey.arrowUp) {
+      if (_candidates.isNotEmpty) {
+        setState(() {
+          _highlightedIndex = (_highlightedIndex - 1).clamp(0, _candidates.length - 1);
+        });
+        final c = _candidates[_highlightedIndex];
+        final status = c.isSelected ? 'Selected' : 'Not selected';
+        TtsService().speak('${c.candidateName}. ${c.partyName}. $status.');
+      }
+      return KeyEventResult.handled;
+    }
+    if (key == LogicalKeyboardKey.keyS) {
+      final selected = _candidates.where((c) => c.isSelected).toList();
+      if (selected.isEmpty) {
+        TtsService().speak('No candidates selected yet.');
+      } else {
+        final names = selected.map((c) => c.candidateName).join(', ');
+        TtsService().speak('Selected: $names.');
+      }
+      return KeyEventResult.handled;
+    }
+    if (key == LogicalKeyboardKey.keyL) {
+      TtsService().speak(
+        'Candidate selection screen. '
+        'Arrow keys to navigate. F to select or deselect. '
+        'J or Enter when done. S to hear selections. D to go back.',
+      );
+      return KeyEventResult.handled;
+    }
+    return KeyEventResult.ignored;
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final provider = context.watch<VotingProvider>();
+    final race = provider.currentRace;
+
+    return Focus(
+      focusNode: _focusNode,
+      autofocus: true,
+      onKeyEvent: _handleKey,
+      child: Scaffold(
+        appBar: AppBar(
+          title: Text(race?.raceName ?? 'Contest'),
+          leading: IconButton(
+            icon: const Icon(Icons.arrow_back),
+            onPressed: () => Navigator.maybePop(context),
+          ),
+        ),
+        body: _loading
+            ? const Center(child: CircularProgressIndicator())
+            : Column(
+                children: [
+                  Container(
+                    width: double.infinity,
+                    padding: const EdgeInsets.all(16),
+                    color: VotRiteTheme.primaryBlue.withValues(alpha: 0.05),
+                    child: Column(
+                      children: [
+                        Text(
+                          'Race ${provider.currentRaceIndex + 1} of ${provider.races.length}',
+                          style: const TextStyle(fontSize: 14, color: Colors.grey),
+                        ),
+                        const SizedBox(height: 4),
+                        Text(
+                          race?.raceName ?? '',
+                          style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                          textAlign: TextAlign.center,
+                        ),
+                        const SizedBox(height: 4),
+                        Text(
+                          'Select ${race?.minNumOfVotes ?? 0} to ${race?.maxNumOfVotes ?? 1} candidate(s)',
+                          style: const TextStyle(fontSize: 14, color: VotRiteTheme.primaryBlue),
+                        ),
+                      ],
+                    ),
+                  ),
+                  Expanded(
+                    child: _candidates.isEmpty
+                        ? const Center(child: Text('No candidates available'))
+                        : ListView.builder(
+                            padding: const EdgeInsets.all(8),
+                            itemCount: _candidates.length,
+                            itemBuilder: (context, index) {
+                              final cand = _candidates[index];
+                              final isHighlighted = index == _highlightedIndex;
+                              return Semantics(
+                                label: '${cand.candidateName}, ${cand.partyName}',
+                                selected: cand.isSelected,
+                                child: Card(
+                                  margin: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                                  elevation: isHighlighted ? 4 : 1,
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(8),
+                                    side: isHighlighted
+                                        ? const BorderSide(color: VotRiteTheme.accentGold, width: 2)
+                                        : cand.isSelected
+                                            ? const BorderSide(color: VotRiteTheme.successGreen, width: 2)
+                                            : BorderSide.none,
+                                  ),
+                                  color: cand.isSelected
+                                      ? VotRiteTheme.successGreen.withValues(alpha: 0.08)
+                                      : null,
+                                  child: ListTile(
+                                    contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                                    leading: CircleAvatar(
+                                      backgroundColor: cand.isSelected
+                                          ? VotRiteTheme.successGreen
+                                          : VotRiteTheme.primaryBlue,
+                                      child: cand.isSelected
+                                          ? const Icon(Icons.check, color: Colors.white)
+                                          : Text(
+                                              '${index + 1}',
+                                              style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+                                            ),
+                                    ),
+                                    title: Text(
+                                      cand.candidateName,
+                                      style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+                                    ),
+                                    subtitle: cand.partyName.isNotEmpty
+                                        ? Text(cand.partyName)
+                                        : null,
+                                    trailing: race?.raceType == 'R' && cand.isSelected
+                                        ? CircleAvatar(
+                                            radius: 16,
+                                            backgroundColor: VotRiteTheme.accentGold,
+                                            child: Text(
+                                              '#${cand.rankValue}',
+                                              style: const TextStyle(
+                                                fontWeight: FontWeight.bold,
+                                                fontSize: 14,
+                                                color: Colors.black,
+                                              ),
+                                            ),
+                                          )
+                                        : null,
+                                    onTap: () {
+                                      setState(() => _highlightedIndex = index);
+                                      _toggleCandidate(index);
+                                    },
+                                  ),
+                                ),
+                              );
+                            },
+                          ),
+                  ),
+                  if (race != null && race.maxNumOfWriteIns > 0)
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
+                      child: OutlinedButton.icon(
+                        onPressed: _showWriteInDialog,
+                        icon: const Icon(Icons.edit),
+                        label: const Text('Write-In Candidate'),
+                      ),
+                    ),
+                  Padding(
+                    padding: const EdgeInsets.all(16),
+                    child: Row(
+                      children: [
+                        Expanded(
+                          child: OutlinedButton(
+                            onPressed: () => Navigator.maybePop(context),
+                            style: OutlinedButton.styleFrom(
+                              padding: const EdgeInsets.symmetric(vertical: 16),
+                            ),
+                            child: const Text('Back', style: TextStyle(fontSize: 18)),
+                          ),
+                        ),
+                        const SizedBox(width: 16),
+                        Expanded(
+                          child: ElevatedButton(
+                            onPressed: _saveAndProceed,
+                            child: Text(
+                              provider.currentRaceIndex < provider.races.length - 1 ? 'Next Race' : 'Continue',
+                              style: const TextStyle(fontSize: 18),
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+      ),
+    );
+  }
+}

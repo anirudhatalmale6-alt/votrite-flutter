@@ -1,0 +1,241 @@
+import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:provider/provider.dart';
+import '../models/ballot.dart';
+import '../providers/voting_provider.dart';
+import '../services/tts_service.dart';
+import '../theme.dart';
+import 'mode_screen.dart';
+
+class BallotScreen extends StatefulWidget {
+  const BallotScreen({super.key});
+
+  @override
+  State<BallotScreen> createState() => _BallotScreenState();
+}
+
+class _BallotScreenState extends State<BallotScreen> {
+  final _searchController = TextEditingController();
+  final _focusNode = FocusNode();
+  List<Ballot> _ballots = [];
+  bool _loading = true;
+  int _selectedIndex = -1;
+  String? _error;
+
+  @override
+  void initState() {
+    super.initState();
+    _loadBallots();
+  }
+
+  @override
+  void dispose() {
+    _searchController.dispose();
+    _focusNode.dispose();
+    super.dispose();
+  }
+
+  Future<void> _loadBallots({String search = ''}) async {
+    setState(() {
+      _loading = true;
+      _error = null;
+    });
+    try {
+      final provider = context.read<VotingProvider>();
+      final ballots = await provider.fetchBallots(search: search);
+      setState(() {
+        _ballots = ballots;
+        _loading = false;
+        _selectedIndex = -1;
+      });
+      final tts = TtsService();
+      if (tts.enabled) {
+        tts.speak('${ballots.length} ballots found. Press F to select, use arrow keys to navigate.');
+      }
+    } catch (e) {
+      setState(() {
+        _loading = false;
+        _error = 'Unable to load ballots. Please check your connection.';
+      });
+    }
+  }
+
+  void _selectBallot(Ballot ballot) {
+    final provider = context.read<VotingProvider>();
+    provider.selectBallot(ballot);
+    TtsService().speak('Selected: ${ballot.election}. Proceeding to mode selection.');
+    Navigator.push(context, MaterialPageRoute(builder: (_) => const ModeScreen()));
+  }
+
+  KeyEventResult _handleKey(FocusNode node, KeyEvent event) {
+    if (event is! KeyDownEvent) return KeyEventResult.ignored;
+    final key = event.logicalKey;
+
+    if (key == LogicalKeyboardKey.keyF) {
+      if (_ballots.isEmpty) return KeyEventResult.handled;
+      if (_selectedIndex < 0) {
+        setState(() => _selectedIndex = 0);
+        TtsService().speak(_ballots[0].election);
+      } else {
+        _selectBallot(_ballots[_selectedIndex]);
+      }
+      return KeyEventResult.handled;
+    }
+    if (key == LogicalKeyboardKey.keyJ || key == LogicalKeyboardKey.enter) {
+      if (_selectedIndex >= 0 && _selectedIndex < _ballots.length) {
+        _selectBallot(_ballots[_selectedIndex]);
+      }
+      return KeyEventResult.handled;
+    }
+    if (key == LogicalKeyboardKey.keyD || key == LogicalKeyboardKey.escape) {
+      Navigator.maybePop(context);
+      return KeyEventResult.handled;
+    }
+    if (key == LogicalKeyboardKey.arrowDown || key == LogicalKeyboardKey.keyK) {
+      if (_ballots.isNotEmpty) {
+        setState(() {
+          _selectedIndex = (_selectedIndex + 1).clamp(0, _ballots.length - 1);
+        });
+        TtsService().speak(_ballots[_selectedIndex].election);
+      }
+      return KeyEventResult.handled;
+    }
+    if (key == LogicalKeyboardKey.arrowUp) {
+      if (_ballots.isNotEmpty) {
+        setState(() {
+          _selectedIndex = (_selectedIndex - 1).clamp(0, _ballots.length - 1);
+        });
+        TtsService().speak(_ballots[_selectedIndex].election);
+      }
+      return KeyEventResult.handled;
+    }
+    if (key == LogicalKeyboardKey.keyS) {
+      if (_selectedIndex >= 0 && _selectedIndex < _ballots.length) {
+        final b = _ballots[_selectedIndex];
+        TtsService().speak('${b.election}. ${b.board}. ${b.client}.');
+      }
+      return KeyEventResult.handled;
+    }
+    if (key == LogicalKeyboardKey.keyL) {
+      TtsService().speak(
+        'Ballot selection screen. F to select first ballot or confirm selection. '
+        'Arrow keys or K to move down. J or Enter to proceed. D to go back. S to read current selection.',
+      );
+      return KeyEventResult.handled;
+    }
+    return KeyEventResult.ignored;
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Focus(
+      focusNode: _focusNode,
+      autofocus: true,
+      onKeyEvent: _handleKey,
+      child: Scaffold(
+        appBar: AppBar(title: const Text('Select Ballot')),
+        body: Column(
+          children: [
+            Padding(
+              padding: const EdgeInsets.all(16),
+              child: Semantics(
+                label: 'Search ballots',
+                child: TextField(
+                  controller: _searchController,
+                  decoration: InputDecoration(
+                    hintText: 'Search elections...',
+                    prefixIcon: const Icon(Icons.search),
+                    border: OutlineInputBorder(borderRadius: BorderRadius.circular(8)),
+                    suffixIcon: IconButton(
+                      icon: const Icon(Icons.clear),
+                      onPressed: () {
+                        _searchController.clear();
+                        _loadBallots();
+                      },
+                    ),
+                  ),
+                  onSubmitted: (val) => _loadBallots(search: val),
+                ),
+              ),
+            ),
+            Expanded(
+              child: _loading
+                  ? const Center(child: CircularProgressIndicator())
+                  : _error != null
+                      ? Center(
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              const Icon(Icons.error_outline, size: 48, color: VotRiteTheme.errorRed),
+                              const SizedBox(height: 16),
+                              Text(_error!, style: const TextStyle(fontSize: 16)),
+                              const SizedBox(height: 16),
+                              ElevatedButton(
+                                onPressed: () => _loadBallots(),
+                                child: const Text('Retry'),
+                              ),
+                            ],
+                          ),
+                        )
+                      : _ballots.isEmpty
+                          ? const Center(
+                              child: Text('No active ballots found', style: TextStyle(fontSize: 18)),
+                            )
+                          : ListView.builder(
+                              itemCount: _ballots.length,
+                              itemBuilder: (context, index) {
+                                final ballot = _ballots[index];
+                                final isSelected = index == _selectedIndex;
+                                return Semantics(
+                                  label: '${ballot.election}, ${ballot.board}',
+                                  selected: isSelected,
+                                  child: Card(
+                                    margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 6),
+                                    elevation: isSelected ? 4 : 1,
+                                    color: isSelected ? VotRiteTheme.primaryBlue.withValues(alpha: 0.1) : null,
+                                    shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(8),
+                                      side: isSelected
+                                          ? const BorderSide(color: VotRiteTheme.primaryBlue, width: 2)
+                                          : BorderSide.none,
+                                    ),
+                                    child: ListTile(
+                                      contentPadding: const EdgeInsets.all(16),
+                                      leading: CircleAvatar(
+                                        backgroundColor: VotRiteTheme.primaryBlue,
+                                        child: Text(
+                                          '${index + 1}',
+                                          style: const TextStyle(color: VotRiteTheme.white, fontWeight: FontWeight.bold),
+                                        ),
+                                      ),
+                                      title: Text(
+                                        ballot.election,
+                                        style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+                                      ),
+                                      subtitle: Column(
+                                        crossAxisAlignment: CrossAxisAlignment.start,
+                                        children: [
+                                          const SizedBox(height: 4),
+                                          Text(ballot.board),
+                                          Text(ballot.client, style: const TextStyle(color: Colors.grey)),
+                                        ],
+                                      ),
+                                      trailing: isSelected
+                                          ? const Icon(Icons.check_circle, color: VotRiteTheme.primaryBlue)
+                                          : const Icon(Icons.chevron_right),
+                                      onTap: () {
+                                        setState(() => _selectedIndex = index);
+                                        _selectBallot(ballot);
+                                      },
+                                    ),
+                                  ),
+                                );
+                              },
+                            ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
