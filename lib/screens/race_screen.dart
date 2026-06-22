@@ -7,6 +7,7 @@ import '../models/race.dart';
 import '../providers/voting_provider.dart';
 import '../services/tts_service.dart';
 import '../theme.dart';
+import 'help_screen.dart';
 import 'party_screen.dart';
 import 'proposition_screen.dart';
 import 'review_screen.dart';
@@ -352,6 +353,16 @@ class _RaceScreenState extends State<RaceScreen> {
             icon: const Icon(Icons.arrow_back),
             onPressed: () => Navigator.maybePop(context),
           ),
+          actions: [
+            Semantics(
+              label: 'Open accessibility help guide',
+              button: true,
+              child: IconButton(
+                icon: const Icon(Icons.help_outline),
+                onPressed: () => HelpScreen.show(context),
+              ),
+            ),
+          ],
         ),
         body: _loading
             ? const Center(child: CircularProgressIndicator())

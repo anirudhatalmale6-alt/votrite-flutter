@@ -4,6 +4,7 @@ import 'package:provider/provider.dart';
 import '../providers/voting_provider.dart';
 import '../services/tts_service.dart';
 import '../theme.dart';
+import 'help_screen.dart';
 import 'review_screen.dart';
 
 class PropositionScreen extends StatefulWidget {
@@ -122,6 +123,16 @@ class _PropositionScreenState extends State<PropositionScreen> {
       child: Scaffold(
         appBar: AppBar(
           title: Text('Proposition ${_currentPropIndex + 1} of ${provider.propositions.length}'),
+          actions: [
+            Semantics(
+              label: 'Open accessibility help guide',
+              button: true,
+              child: IconButton(
+                icon: const Icon(Icons.help_outline),
+                onPressed: () => HelpScreen.show(context),
+              ),
+            ),
+          ],
         ),
         body: Padding(
           padding: const EdgeInsets.all(24),
