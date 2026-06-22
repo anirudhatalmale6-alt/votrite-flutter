@@ -134,23 +134,31 @@ class _PropositionScreenState extends State<PropositionScreen> {
                 valueColor: const AlwaysStoppedAnimation(VotRiteTheme.primaryBlue),
               ),
               const SizedBox(height: 24),
-              Text(
-                prop.propTitle,
-                style: Theme.of(context).textTheme.headlineMedium,
-                textAlign: TextAlign.center,
+              Semantics(
+                header: true,
+                label: 'Proposition ${_currentPropIndex + 1} of ${provider.propositions.length}. ${prop.propTitle}.',
+                child: Text(
+                  prop.propTitle,
+                  style: Theme.of(context).textTheme.headlineMedium,
+                  textAlign: TextAlign.center,
+                ),
               ),
               const SizedBox(height: 16),
               Expanded(
                 child: SingleChildScrollView(
-                  child: Container(
-                    padding: const EdgeInsets.all(20),
-                    decoration: BoxDecoration(
-                      color: VotRiteTheme.lightGray,
-                      borderRadius: BorderRadius.circular(12),
-                    ),
-                    child: Text(
-                      prop.propText,
-                      style: const TextStyle(fontSize: 16, height: 1.5),
+                  child: Semantics(
+                    label: prop.propText,
+                    readOnly: true,
+                    child: Container(
+                      padding: const EdgeInsets.all(20),
+                      decoration: BoxDecoration(
+                        color: VotRiteTheme.lightGray,
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                      child: Text(
+                        prop.propText,
+                        style: const TextStyle(fontSize: 16, height: 1.5),
+                      ),
                     ),
                   ),
                 ),
@@ -230,7 +238,9 @@ class _VoteButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Semantics(
-      label: '$label ${isSelected ? "selected" : ""}',
+      label: 'Vote $label. ${isSelected ? "Currently selected." : "Double tap to vote $label."}',
+      button: true,
+      selected: isSelected,
       child: GestureDetector(
         onTap: onTap,
         child: AnimatedContainer(

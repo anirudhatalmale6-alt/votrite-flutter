@@ -357,28 +357,34 @@ class _RaceScreenState extends State<RaceScreen> {
             ? const Center(child: CircularProgressIndicator())
             : Column(
                 children: [
-                  Container(
-                    width: double.infinity,
-                    padding: const EdgeInsets.all(16),
-                    color: VotRiteTheme.primaryBlue.withValues(alpha: 0.05),
-                    child: Column(
-                      children: [
-                        Text(
-                          'Race ${provider.currentRaceIndex + 1} of ${provider.races.length}',
-                          style: const TextStyle(fontSize: 14, color: Colors.grey),
-                        ),
-                        const SizedBox(height: 4),
-                        Text(
-                          race?.raceName ?? '',
-                          style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-                          textAlign: TextAlign.center,
-                        ),
-                        const SizedBox(height: 4),
-                        Text(
-                          'Select ${race?.minNumOfVotes ?? 0} to ${race?.maxNumOfVotes ?? 1} candidate(s)',
-                          style: const TextStyle(fontSize: 14, color: VotRiteTheme.primaryBlue),
-                        ),
-                      ],
+                  Semantics(
+                    header: true,
+                    label: 'Race ${provider.currentRaceIndex + 1} of ${provider.races.length}. '
+                        '${race?.raceName ?? ""}. '
+                        'Select ${race?.minNumOfVotes ?? 0} to ${race?.maxNumOfVotes ?? 1} candidates.',
+                    child: Container(
+                      width: double.infinity,
+                      padding: const EdgeInsets.all(16),
+                      color: VotRiteTheme.primaryBlue.withValues(alpha: 0.05),
+                      child: Column(
+                        children: [
+                          Text(
+                            'Race ${provider.currentRaceIndex + 1} of ${provider.races.length}',
+                            style: const TextStyle(fontSize: 14, color: Colors.grey),
+                          ),
+                          const SizedBox(height: 4),
+                          Text(
+                            race?.raceName ?? '',
+                            style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                            textAlign: TextAlign.center,
+                          ),
+                          const SizedBox(height: 4),
+                          Text(
+                            'Select ${race?.minNumOfVotes ?? 0} to ${race?.maxNumOfVotes ?? 1} candidate(s)',
+                            style: const TextStyle(fontSize: 14, color: VotRiteTheme.primaryBlue),
+                          ),
+                        ],
+                      ),
                     ),
                   ),
                   Expanded(
@@ -391,8 +397,13 @@ class _RaceScreenState extends State<RaceScreen> {
                               final cand = _candidates[index];
                               final isHighlighted = index == _highlightedIndex;
                               return Semantics(
-                                label: '${cand.candidateName}, ${cand.partyName}',
+                                label: 'Candidate ${index + 1} of ${_candidates.length}. '
+                                    '${cand.candidateName}. '
+                                    '${cand.partyName.isNotEmpty ? "${cand.partyName}. " : ""}'
+                                    '${cand.isSelected ? "Selected" : "Not selected"}. '
+                                    'Double tap to ${cand.isSelected ? "deselect" : "select"}.',
                                 selected: cand.isSelected,
+                                button: true,
                                 child: Card(
                                   margin: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
                                   elevation: isHighlighted ? 4 : 1,

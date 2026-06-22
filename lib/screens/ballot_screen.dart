@@ -187,8 +187,12 @@ class _BallotScreenState extends State<BallotScreen> {
                                 final ballot = _ballots[index];
                                 final isSelected = index == _selectedIndex;
                                 return Semantics(
-                                  label: '${ballot.election}, ${ballot.board}',
+                                  label: 'Ballot ${index + 1} of ${_ballots.length}. '
+                                      '${ballot.election}. ${ballot.board}. ${ballot.client}. '
+                                      '${isSelected ? "Selected." : ""} '
+                                      'Double tap to choose this ballot.',
                                   selected: isSelected,
+                                  button: true,
                                   child: Card(
                                     margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 6),
                                     elevation: isSelected ? 4 : 1,
