@@ -12,8 +12,8 @@
 	<string>manual</string>
 	<key>provisioningProfiles</key>
 	<dict>
-		<key>com.votrite.votriteApp</key>
-		<string>match AppStore com.votrite.votriteApp</string>
+		<key>com.votrite.ios</key>
+		<string>match AppStore com.votrite.ios</string>
 	</dict>
 </dict>
 </plist>
