@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
+import 'package:vibration/vibration.dart';
 import '../models/candidate.dart';
 import '../models/race.dart';
 import '../providers/voting_provider.dart';
@@ -110,6 +111,7 @@ class _RaceScreenState extends State<RaceScreen> {
           _candidates[index].rankValue = selectedCount + 1;
         }
         TtsService().speak('Selected ${_candidates[index].candidateName}.');
+        Vibration.vibrate(duration: 50);
       }
     });
   }
@@ -163,6 +165,12 @@ class _RaceScreenState extends State<RaceScreen> {
       return;
     }
 
+    final remaining = race.maxNumOfWriteIns - writeInsUsed;
+    TtsService().speak(
+      'Write-in candidate. You have $remaining write-in slot${remaining > 1 ? "s" : ""} remaining. '
+      'Type the candidate name, then press Enter to submit. Press Escape to cancel.',
+    );
+
     final controller = TextEditingController();
     showDialog(
       context: context,
@@ -175,24 +183,56 @@ class _RaceScreenState extends State<RaceScreen> {
             hintText: 'Enter candidate name',
             border: OutlineInputBorder(),
           ),
+          onSubmitted: (value) async {
+            final name = value.trim();
+            if (name.isEmpty) {
+              TtsService().speak('Please type a candidate name first.');
+              return;
+            }
+            Navigator.pop(ctx);
+            TtsService().speak('Submitting write-in candidate: $name. Please wait.');
+            final success = await provider.addWriteInCandidate(
+              race.raceId,
+              name,
+              partyId: _partyId,
+            );
+            if (success) {
+              TtsService().speak('Write-in candidate $name added successfully. Press F to select.');
+              Vibration.vibrate(duration: 100);
+              _loadCandidates();
+            } else {
+              TtsService().speak('Failed to add write-in candidate. Press W to try again.');
+            }
+          },
         ),
         actions: [
           TextButton(
-            onPressed: () => Navigator.pop(ctx),
+            onPressed: () {
+              Navigator.pop(ctx);
+              TtsService().speak('Write-in cancelled. Returning to candidate list.');
+            },
             child: const Text('Cancel'),
           ),
           ElevatedButton(
             onPressed: () async {
               final name = controller.text.trim();
-              if (name.isEmpty) return;
+              if (name.isEmpty) {
+                TtsService().speak('Please type a candidate name first.');
+                return;
+              }
               Navigator.pop(ctx);
+              TtsService().speak('Submitting write-in candidate: $name. Please wait.');
               final success = await provider.addWriteInCandidate(
                 race.raceId,
                 name,
                 partyId: _partyId,
               );
               if (success) {
+                TtsService().speak('Write-in candidate $name added successfully. Press F to select.');
+                Vibration.vibrate(duration: 100);
                 _loadCandidates();
+              } else {
+                TtsService().speak('Failed to add write-in candidate. Press W to try again.');
               }
             },
             child: const Text('Add'),
@@ -224,7 +264,17 @@ class _RaceScreenState extends State<RaceScreen> {
       Navigator.maybePop(context);
       return KeyEventResult.handled;
     }
-    if (key == LogicalKeyboardKey.keyK || key == LogicalKeyboardKey.arrowDown) {
+    if (key == LogicalKeyboardKey.keyK) {
+      if (_highlightedIndex >= 0 && _highlightedIndex < _candidates.length) {
+        if (_candidates[_highlightedIndex].isSelected) {
+          _toggleCandidate(_highlightedIndex);
+        } else {
+          TtsService().speak('${_candidates[_highlightedIndex].candidateName} is not selected.');
+        }
+      }
+      return KeyEventResult.handled;
+    }
+    if (key == LogicalKeyboardKey.arrowDown) {
       if (_candidates.isNotEmpty) {
         setState(() {
           _highlightedIndex = (_highlightedIndex + 1).clamp(0, _candidates.length - 1);
@@ -256,12 +306,31 @@ class _RaceScreenState extends State<RaceScreen> {
       }
       return KeyEventResult.handled;
     }
+    if (key == LogicalKeyboardKey.keyW) {
+      final provider = context.read<VotingProvider>();
+      final race = provider.currentRace;
+      if (race != null && race.maxNumOfWriteIns > 0) {
+        _showWriteInDialog();
+      } else {
+        TtsService().speak('Write-in candidates are not available for this race.');
+      }
+      return KeyEventResult.handled;
+    }
+    if (key == LogicalKeyboardKey.keyZ) {
+      _saveAndProceed();
+      return KeyEventResult.handled;
+    }
     if (key == LogicalKeyboardKey.keyL) {
-      TtsService().speak(
-        'Candidate selection screen. '
+      final provider = context.read<VotingProvider>();
+      final race = provider.currentRace;
+      var help = 'Candidate selection screen. '
         'Arrow keys to navigate. F to select or deselect. '
-        'J or Enter when done. S to hear selections. D to go back.',
-      );
+        'K to deselect. J or Enter for next race. '
+        'S to hear selections. D to go back. Z to skip.';
+      if (race != null && race.maxNumOfWriteIns > 0) {
+        help += ' W to write in a candidate.';
+      }
+      TtsService().speak(help);
       return KeyEventResult.handled;
     }
     return KeyEventResult.ignored;
