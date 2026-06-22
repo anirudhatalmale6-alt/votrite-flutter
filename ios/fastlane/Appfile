@@ -1,0 +1,3 @@
+app_identifier("com.votrite.votriteApp")
+apple_id("info@votrite.com")
+team_name("Voterite, Inc.")
