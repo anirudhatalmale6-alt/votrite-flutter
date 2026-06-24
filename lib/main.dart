@@ -16,12 +16,13 @@ class VotRiteApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return ChangeNotifierProvider(
       create: (_) => VotingProvider(),
-      child: Consumer<VotingProvider>(
-        builder: (context, provider, _) {
+      child: Selector<VotingProvider, bool>(
+        selector: (_, p) => p.accessibilityMode,
+        builder: (context, isAccessible, _) {
           return MaterialApp(
             title: 'VotRite',
             debugShowCheckedModeBanner: false,
-            theme: provider.accessibilityMode
+            theme: isAccessible
                 ? VotRiteTheme.accessibilityTheme
                 : VotRiteTheme.lightTheme,
             home: const SplashScreen(),
