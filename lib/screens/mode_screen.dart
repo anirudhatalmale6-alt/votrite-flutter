@@ -5,113 +5,81 @@ import '../services/tts_service.dart';
 import '../theme.dart';
 import 'login_screen.dart';
 
-class ModeScreen extends StatefulWidget {
+class ModeScreen extends StatelessWidget {
   const ModeScreen({super.key});
 
   @override
-  State<ModeScreen> createState() => _ModeScreenState();
-}
-
-class _ModeScreenState extends State<ModeScreen> {
-  int _selectedMode = -1;
-
-  void _proceed() {
-    if (_selectedMode == 1) {
-      context.read<VotingProvider>().setAccessibilityMode(true);
-      TtsService().setEnabled(true);
-    }
-    Navigator.push(
-      context,
-      MaterialPageRoute(builder: (_) => LoginScreen(accessibilityMode: _selectedMode == 1)),
-    );
-  }
-
-  @override
   Widget build(BuildContext context) {
-    final ballotName = context.read<VotingProvider>().selectedBallot?.election ?? '';
-
     return Scaffold(
       appBar: AppBar(title: const Text('Select Mode')),
-      body: Padding(
-        padding: const EdgeInsets.all(24),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            const SizedBox(height: 16),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                const Icon(Icons.how_to_vote, size: 32, color: VotRiteTheme.darkBlue),
-                const SizedBox(width: 12),
-                const Text(
-                  'How would you like to vote?',
-                  style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: VotRiteTheme.darkBlue),
+      body: SafeArea(
+        child: Padding(
+          padding: const EdgeInsets.all(32),
+          child: Column(
+            children: [
+              const SizedBox(height: 40),
+              const Icon(Icons.how_to_vote, size: 48, color: VotRiteTheme.primaryBlue),
+              const SizedBox(height: 16),
+              const Text(
+                'How would you like to vote?',
+                style: TextStyle(
+                  fontSize: 22,
+                  fontWeight: FontWeight.bold,
+                  color: VotRiteTheme.darkBlue,
                 ),
-              ],
-            ),
-            if (ballotName.isNotEmpty) ...[
-              const SizedBox(height: 8),
-              Text(ballotName, style: const TextStyle(fontSize: 14, color: Colors.grey), textAlign: TextAlign.center),
-            ],
-            const SizedBox(height: 28),
-            _buildCard(0, Icons.touch_app, 'Normal Mode', 'Use touch screen to navigate and vote'),
-            const SizedBox(height: 16),
-            _buildCard(1, Icons.accessibility_new, 'Visually Impaired Mode', 'Voice guidance with keyboard navigation'),
-            const Spacer(),
-            Row(
-              children: [
-                Expanded(
-                  child: OutlinedButton(
-                    onPressed: () => Navigator.maybePop(context),
-                    style: OutlinedButton.styleFrom(padding: const EdgeInsets.symmetric(vertical: 14)),
-                    child: const Text('Back', style: TextStyle(fontSize: 16)),
-                  ),
-                ),
-                const SizedBox(width: 16),
-                Expanded(
-                  child: ElevatedButton(
-                    onPressed: _selectedMode >= 0 ? _proceed : null,
-                    style: ElevatedButton.styleFrom(padding: const EdgeInsets.symmetric(vertical: 14)),
-                    child: const Text('Next'),
-                  ),
-                ),
-              ],
-            ),
-            const SizedBox(height: 24),
-          ],
-        ),
-      ),
-    );
-  }
-
-  Widget _buildCard(int index, IconData icon, String title, String desc) {
-    final sel = _selectedMode == index;
-    return InkWell(
-      borderRadius: BorderRadius.circular(12),
-      onTap: () => setState(() => _selectedMode = index),
-      child: Container(
-        padding: const EdgeInsets.all(20),
-        decoration: BoxDecoration(
-          color: sel ? Colors.blue.shade50 : Colors.white,
-          borderRadius: BorderRadius.circular(12),
-          border: Border.all(color: sel ? VotRiteTheme.primaryBlue : Colors.grey.shade300, width: sel ? 2 : 1),
-        ),
-        child: Row(
-          children: [
-            Icon(icon, size: 40, color: sel ? VotRiteTheme.primaryBlue : VotRiteTheme.darkGray),
-            const SizedBox(width: 16),
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(title, style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: sel ? VotRiteTheme.primaryBlue : VotRiteTheme.darkGray)),
-                  const SizedBox(height: 4),
-                  Text(desc, style: const TextStyle(fontSize: 13, color: Colors.grey)),
-                ],
+                textAlign: TextAlign.center,
               ),
-            ),
-            Icon(sel ? Icons.radio_button_checked : Icons.radio_button_off, color: sel ? VotRiteTheme.primaryBlue : Colors.grey),
-          ],
+              const SizedBox(height: 48),
+              SizedBox(
+                width: double.infinity,
+                height: 64,
+                child: ElevatedButton.icon(
+                  icon: const Icon(Icons.touch_app, size: 28),
+                  label: const Text('Normal Mode', style: TextStyle(fontSize: 18)),
+                  onPressed: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (_) => const LoginScreen(),
+                      ),
+                    );
+                  },
+                ),
+              ),
+              const SizedBox(height: 20),
+              SizedBox(
+                width: double.infinity,
+                height: 64,
+                child: OutlinedButton.icon(
+                  icon: const Icon(Icons.accessibility_new, size: 28),
+                  label: const Text('Visually Impaired', style: TextStyle(fontSize: 18)),
+                  style: OutlinedButton.styleFrom(
+                    side: const BorderSide(color: VotRiteTheme.primaryBlue, width: 2),
+                    foregroundColor: VotRiteTheme.primaryBlue,
+                  ),
+                  onPressed: () {
+                    context.read<VotingProvider>().setAccessibilityMode(true);
+                    TtsService().setEnabled(true);
+                    TtsService().speak(
+                      'Visually impaired mode activated. Voice guidance enabled.',
+                    );
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (_) => const LoginScreen(accessibilityMode: true),
+                      ),
+                    );
+                  },
+                ),
+              ),
+              const Spacer(),
+              TextButton.icon(
+                icon: const Icon(Icons.arrow_back),
+                label: const Text('Back', style: TextStyle(fontSize: 16)),
+                onPressed: () => Navigator.maybePop(context),
+              ),
+            ],
+          ),
         ),
       ),
     );

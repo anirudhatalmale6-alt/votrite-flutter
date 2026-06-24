@@ -63,11 +63,18 @@ class _BallotScreenState extends State<BallotScreen> {
   void _selectBallot(Ballot ballot) {
     final provider = context.read<VotingProvider>();
     provider.selectBallot(ballot);
-    TtsService().speak('Selected: ${ballot.election}. Proceeding to mode selection.');
-    Navigator.push(context, MaterialPageRoute(builder: (_) => const ModeScreen()));
+    if (TtsService().enabled) {
+      TtsService().speak('Selected: ${ballot.election}. Proceeding to mode selection.');
+    }
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (mounted) {
+        Navigator.push(context, MaterialPageRoute(builder: (_) => const ModeScreen()));
+      }
+    });
   }
 
   KeyEventResult _handleKey(FocusNode node, KeyEvent event) {
+    if (!(ModalRoute.of(context)?.isCurrent ?? true)) return KeyEventResult.ignored;
     if (event is! KeyDownEvent) return KeyEventResult.ignored;
     final key = event.logicalKey;
 
@@ -196,7 +203,7 @@ class _BallotScreenState extends State<BallotScreen> {
                                   child: Card(
                                     margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 6),
                                     elevation: isSelected ? 4 : 1,
-                                    color: isSelected ? VotRiteTheme.primaryBlue.withValues(alpha: 0.1) : null,
+                                    color: isSelected ? Colors.blue.shade50 : null,
                                     shape: RoundedRectangleBorder(
                                       borderRadius: BorderRadius.circular(8),
                                       side: isSelected

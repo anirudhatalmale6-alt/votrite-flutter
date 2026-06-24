@@ -130,6 +130,7 @@ class _LoginScreenState extends State<LoginScreen> {
                 child: TextField(
                   controller: _pinController,
                   focusNode: _pinFocusNode,
+                  autofocus: false,
                   obscureText: _obscurePin,
                   keyboardType: TextInputType.number,
                   inputFormatters: [FilteringTextInputFormatter.digitsOnly],
