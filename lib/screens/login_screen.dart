@@ -111,8 +111,21 @@ class _LoginScreenState extends State<LoginScreen> {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              const Icon(Icons.lock_outline, size: 64, color: VotRiteTheme.primaryBlue),
-              const SizedBox(height: 24),
+              ClipRRect(
+                borderRadius: BorderRadius.circular(16),
+                child: Image.asset(
+                  'assets/images/votrite_logo.png',
+                  width: 72,
+                  height: 72,
+                  fit: BoxFit.cover,
+                  errorBuilder: (_, __, ___) => const Icon(
+                    Icons.lock_outline,
+                    size: 64,
+                    color: VotRiteTheme.primaryBlue,
+                  ),
+                ),
+              ),
+              const SizedBox(height: 20),
               Text(
                 ballotName,
                 style: Theme.of(context).textTheme.headlineMedium,
