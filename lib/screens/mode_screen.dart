@@ -96,11 +96,11 @@ class ModeScreen extends StatelessWidget {
                         borderRadius: BorderRadius.circular(24),
                         child: Image.asset(
                           'assets/images/votrite_logo.png',
-                          width: 100,
-                          height: 100,
+                          width: 80,
+                          height: 80,
                           fit: BoxFit.cover,
                           errorBuilder: (_, __, ___) => Container(
-                            width: 100, height: 100,
+                            width: 80, height: 80,
                             color: VotRiteTheme.white,
                             child: const Icon(Icons.how_to_vote, size: 48, color: VotRiteTheme.darkBlue),
                           ),
@@ -116,7 +116,7 @@ class ModeScreen extends StatelessWidget {
                       child: const Text(
                         'VotRite',
                         style: TextStyle(
-                          fontSize: 32,
+                          fontSize: 26,
                           fontWeight: FontWeight.w900,
                           color: Colors.white,
                           letterSpacing: 3,
@@ -128,7 +128,7 @@ class ModeScreen extends StatelessWidget {
                     const Text(
                       'How would you like to vote?',
                       style: TextStyle(
-                        fontSize: 20,
+                        fontSize: 17,
                         fontWeight: FontWeight.w500,
                         color: Colors.white,
                       ),
@@ -254,7 +254,7 @@ class _ModeCard extends StatelessWidget {
         borderRadius: BorderRadius.circular(16),
         onTap: onTap,
         child: Container(
-          padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 22),
+          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(16),
             border: Border.all(color: accentColor.withOpacity(0.2), width: 1.5),
@@ -262,8 +262,8 @@ class _ModeCard extends StatelessWidget {
           child: Row(
             children: [
               Container(
-                width: 60,
-                height: 60,
+                width: 48,
+                height: 48,
                 decoration: BoxDecoration(
                   gradient: LinearGradient(
                     begin: Alignment.topLeft,
@@ -273,7 +273,7 @@ class _ModeCard extends StatelessWidget {
                   borderRadius: BorderRadius.circular(14),
                   border: Border.all(color: accentColor.withOpacity(0.2)),
                 ),
-                child: Icon(icon, size: 30, color: accentColor),
+                child: Icon(icon, size: 24, color: accentColor),
               ),
               const SizedBox(width: 16),
               Expanded(
@@ -283,7 +283,7 @@ class _ModeCard extends StatelessWidget {
                     Text(
                       title,
                       style: TextStyle(
-                        fontSize: 19,
+                        fontSize: 16,
                         fontWeight: FontWeight.bold,
                         color: accentColor == VotRiteTheme.primaryBlue
                             ? VotRiteTheme.darkBlue
@@ -293,7 +293,7 @@ class _ModeCard extends StatelessWidget {
                     const SizedBox(height: 4),
                     Text(
                       subtitle,
-                      style: TextStyle(fontSize: 13, color: Colors.grey.shade600),
+                      style: TextStyle(fontSize: 12, color: Colors.grey.shade600),
                     ),
                   ],
                 ),

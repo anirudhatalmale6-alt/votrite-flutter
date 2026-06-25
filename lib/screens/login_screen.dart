@@ -193,11 +193,11 @@ class _LoginScreenState extends State<LoginScreen> {
                       ),
                     ),
                   ),
-                  const SizedBox(height: 14),
+                  const SizedBox(height: 10),
                   Text(
                     ballotName,
                     style: const TextStyle(
-                      fontSize: 20,
+                      fontSize: 16,
                       fontWeight: FontWeight.bold,
                       color: Colors.white,
                     ),
@@ -222,10 +222,10 @@ class _LoginScreenState extends State<LoginScreen> {
                       Container(width: 20, height: 2, color: const Color(0xFFB31942).withOpacity(0.6)),
                     ],
                   ),
-                  const SizedBox(height: 28),
+                  const SizedBox(height: 20),
                   // PIN card
                   Container(
-                    padding: const EdgeInsets.all(28),
+                    padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 18),
                     decoration: BoxDecoration(
                       color: Colors.white,
                       borderRadius: BorderRadius.circular(20),
@@ -247,14 +247,14 @@ class _LoginScreenState extends State<LoginScreen> {
                             const Text(
                               'Enter your PIN code',
                               style: TextStyle(
-                                fontSize: 16,
+                                fontSize: 14,
                                 fontWeight: FontWeight.w600,
                                 color: VotRiteTheme.darkBlue,
                               ),
                             ),
                           ],
                         ),
-                        const SizedBox(height: 20),
+                        const SizedBox(height: 14),
                         SizedBox(
                           width: 260,
                           child: TextField(
@@ -265,11 +265,11 @@ class _LoginScreenState extends State<LoginScreen> {
                             keyboardType: TextInputType.number,
                             inputFormatters: [FilteringTextInputFormatter.digitsOnly],
                             textAlign: TextAlign.center,
-                            style: const TextStyle(fontSize: 28, letterSpacing: 12),
+                            style: const TextStyle(fontSize: 22, letterSpacing: 8),
                             maxLength: 10,
                             decoration: InputDecoration(
                               hintText: '----',
-                              hintStyle: const TextStyle(letterSpacing: 12, color: Colors.grey),
+                              hintStyle: const TextStyle(letterSpacing: 8, color: Colors.grey),
                               counterText: '',
                               filled: true,
                               fillColor: Colors.grey.shade50,
@@ -309,21 +309,21 @@ class _LoginScreenState extends State<LoginScreen> {
                             ),
                           ),
                         ],
-                        const SizedBox(height: 20),
+                        const SizedBox(height: 16),
                         SizedBox(
                           width: double.infinity,
-                          height: 52,
+                          height: 46,
                           child: ElevatedButton(
                             onPressed: _loading ? null : _login,
                             style: ElevatedButton.styleFrom(
-                              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
                             ),
                             child: _loading
                                 ? const SizedBox(
-                                    height: 22, width: 22,
+                                    height: 20, width: 20,
                                     child: CircularProgressIndicator(color: Colors.white, strokeWidth: 2),
                                   )
-                                : const Text('Login', style: TextStyle(fontSize: 18)),
+                                : const Text('Login', style: TextStyle(fontSize: 15)),
                           ),
                         ),
                       ],
