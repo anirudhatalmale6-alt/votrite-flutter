@@ -73,6 +73,15 @@ class _FinishScreenState extends State<FinishScreen> with SingleTickerProviderSt
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
+                ClipRRect(
+                  borderRadius: BorderRadius.circular(14),
+                  child: Image.asset(
+                    'assets/images/votrite_logo.png',
+                    width: 56,
+                    height: 56,
+                  ),
+                ),
+                const SizedBox(height: 20),
                 ScaleTransition(
                   scale: _scaleAnim,
                   child: Container(

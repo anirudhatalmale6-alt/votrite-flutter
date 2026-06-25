@@ -128,7 +128,14 @@ class _PropositionScreenState extends State<PropositionScreen> {
       onKeyEvent: _handleKey,
       child: Scaffold(
         appBar: AppBar(
-          title: Text('Proposition ${_currentPropIndex + 1} of ${provider.propositions.length}'),
+          title: Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Image.asset('assets/images/votrite_logo.png', width: 28, height: 28),
+              const SizedBox(width: 8),
+              Text('Proposition ${_currentPropIndex + 1} of ${provider.propositions.length}'),
+            ],
+          ),
           actions: [
             Semantics(
               label: 'Open accessibility help guide',

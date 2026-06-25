@@ -349,7 +349,14 @@ class _RaceScreenState extends State<RaceScreen> {
       onKeyEvent: _handleKey,
       child: Scaffold(
         appBar: AppBar(
-          title: Text(race?.raceName ?? 'Contest'),
+          title: Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Image.asset('assets/images/votrite_logo.png', width: 28, height: 28),
+              const SizedBox(width: 8),
+              Flexible(child: Text(race?.raceName ?? 'Contest', overflow: TextOverflow.ellipsis)),
+            ],
+          ),
           leading: IconButton(
             icon: const Icon(Icons.arrow_back),
             onPressed: () => Navigator.maybePop(context),

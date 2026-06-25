@@ -142,7 +142,14 @@ class _BallotScreenState extends State<BallotScreen> {
       onKeyEvent: _handleKey,
       child: Scaffold(
         appBar: AppBar(
-          title: const Text('Select Ballot'),
+          title: Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Image.asset('assets/images/votrite_logo.png', width: 28, height: 28),
+              const SizedBox(width: 8),
+              const Text('Select Ballot'),
+            ],
+          ),
           actions: [
             PopupMenuButton<String>(
               onSelected: (value) {

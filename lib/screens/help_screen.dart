@@ -33,7 +33,7 @@ class HelpScreen extends StatelessWidget {
             ),
             child: Row(
               children: [
-                const Icon(Icons.accessibility_new, color: Colors.white, size: 28),
+                Image.asset('assets/images/votrite_logo.png', width: 28, height: 28),
                 const SizedBox(width: 12),
                 const Expanded(
                   child: Text(
