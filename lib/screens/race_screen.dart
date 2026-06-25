@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import 'package:vibration/vibration.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 import '../models/candidate.dart';
 import '../models/race.dart';
 import '../providers/voting_provider.dart';
@@ -478,16 +479,38 @@ class _RaceScreenState extends State<RaceScreen> {
                                       : null,
                                   child: ListTile(
                                     contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
-                                    leading: CircleAvatar(
-                                      backgroundColor: cand.isSelected
-                                          ? VotRiteTheme.successGreen
-                                          : VotRiteTheme.primaryBlue,
-                                      child: cand.isSelected
-                                          ? const Icon(Icons.check, color: Colors.white)
-                                          : Text(
-                                              '${index + 1}',
-                                              style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+                                    leading: Stack(
+                                      children: [
+                                        cand.photo.isNotEmpty
+                                            ? CircleAvatar(
+                                                radius: 22,
+                                                backgroundColor: Colors.grey.shade200,
+                                                backgroundImage: CachedNetworkImageProvider(cand.photo),
+                                              )
+                                            : CircleAvatar(
+                                                radius: 22,
+                                                backgroundColor: VotRiteTheme.primaryBlue,
+                                                child: Text(
+                                                  '${index + 1}',
+                                                  style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+                                                ),
+                                              ),
+                                        if (cand.isSelected)
+                                          Positioned(
+                                            right: 0,
+                                            bottom: 0,
+                                            child: Container(
+                                              width: 18,
+                                              height: 18,
+                                              decoration: BoxDecoration(
+                                                color: VotRiteTheme.successGreen,
+                                                shape: BoxShape.circle,
+                                                border: Border.all(color: Colors.white, width: 2),
+                                              ),
+                                              child: const Icon(Icons.check, color: Colors.white, size: 12),
                                             ),
+                                          ),
+                                      ],
                                     ),
                                     title: Text(
                                       cand.candidateName,

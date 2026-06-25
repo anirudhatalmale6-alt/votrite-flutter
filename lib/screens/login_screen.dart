@@ -41,7 +41,8 @@ class _LoginScreenState extends State<LoginScreen> {
 
   void _onPinChanged() {
     final val = _pinController.text.trim();
-    if (val.length == 4 && RegExp(r'^\d+$').hasMatch(val)) {
+    if (val.length >= 4 && RegExp(r'^\d+$').hasMatch(val)) {
+      _pinFocusNode.unfocus();
       TtsService().speak('PIN entered. Press Enter to login.');
     }
   }
