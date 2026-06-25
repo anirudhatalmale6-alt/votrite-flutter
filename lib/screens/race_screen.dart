@@ -11,6 +11,7 @@ import 'help_screen.dart';
 import 'party_screen.dart';
 import 'proposition_screen.dart';
 import 'review_screen.dart';
+import 'splash_screen.dart';
 
 class RaceScreen extends StatefulWidget {
   const RaceScreen({super.key});
@@ -362,6 +363,30 @@ class _RaceScreenState extends State<RaceScreen> {
                 onPressed: () => HelpScreen.show(context),
               ),
             ),
+            PopupMenuButton<String>(
+              onSelected: (value) {
+                if (value == 'start_over') {
+                  provider.reset();
+                  Navigator.pushAndRemoveUntil(
+                    context,
+                    MaterialPageRoute(builder: (_) => const SplashScreen()),
+                    (route) => false,
+                  );
+                }
+              },
+              itemBuilder: (_) => [
+                const PopupMenuItem(
+                  value: 'start_over',
+                  child: Row(
+                    children: [
+                      Icon(Icons.refresh, size: 20, color: VotRiteTheme.primaryBlue),
+                      SizedBox(width: 8),
+                      Text('Start Over'),
+                    ],
+                  ),
+                ),
+              ],
+            ),
           ],
         ),
         body: _loading
@@ -398,6 +423,21 @@ class _RaceScreenState extends State<RaceScreen> {
                       ),
                     ),
                   ),
+                  if (_candidates.length > 4)
+                    Padding(
+                      padding: const EdgeInsets.only(bottom: 4),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Icon(Icons.swipe_vertical, size: 16, color: Colors.grey.shade500),
+                          const SizedBox(width: 4),
+                          Text(
+                            'Scroll for more candidates',
+                            style: TextStyle(fontSize: 12, color: Colors.grey.shade500),
+                          ),
+                        ],
+                      ),
+                    ),
                   Expanded(
                     child: _candidates.isEmpty
                         ? const Center(child: Text('No candidates available'))

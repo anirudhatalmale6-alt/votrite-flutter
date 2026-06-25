@@ -5,6 +5,7 @@ import '../providers/voting_provider.dart';
 import '../services/tts_service.dart';
 import '../theme.dart';
 import 'race_screen.dart';
+import 'splash_screen.dart';
 
 class LoginScreen extends StatefulWidget {
   final bool accessibilityMode;
@@ -114,14 +115,47 @@ class _LoginScreenState extends State<LoginScreen> {
           ),
         ),
         child: SafeArea(
-          child: Center(
-            child: SingleChildScrollView(
-              padding: const EdgeInsets.symmetric(horizontal: 28),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  const SizedBox(height: 16),
-                  // Stars row
+          child: Column(
+            children: [
+              Align(
+                alignment: Alignment.topRight,
+                child: Padding(
+                  padding: const EdgeInsets.only(top: 8, right: 8),
+                  child: PopupMenuButton<String>(
+                    icon: const Icon(Icons.more_vert, color: Colors.white70),
+                    onSelected: (value) {
+                      if (value == 'start_over') {
+                        context.read<VotingProvider>().reset();
+                        Navigator.pushAndRemoveUntil(
+                          context,
+                          MaterialPageRoute(builder: (_) => const SplashScreen()),
+                          (route) => false,
+                        );
+                      }
+                    },
+                    itemBuilder: (_) => [
+                      const PopupMenuItem(
+                        value: 'start_over',
+                        child: Row(
+                          children: [
+                            Icon(Icons.refresh, size: 20, color: VotRiteTheme.primaryBlue),
+                            SizedBox(width: 8),
+                            Text('Start Over'),
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+              Expanded(
+                child: Center(
+                  child: SingleChildScrollView(
+                    padding: const EdgeInsets.symmetric(horizontal: 28),
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        // Stars row
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: List.generate(
@@ -302,10 +336,13 @@ class _LoginScreenState extends State<LoginScreen> {
                     label: const Text('Back', style: TextStyle(fontSize: 15)),
                     onPressed: () => Navigator.maybePop(context),
                   ),
-                  const SizedBox(height: 16),
-                ],
+                        const SizedBox(height: 16),
+                      ],
+                    ),
+                  ),
+                ),
               ),
-            ),
+            ],
           ),
         ),
       ),

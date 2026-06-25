@@ -6,6 +6,7 @@ import '../providers/voting_provider.dart';
 import '../services/tts_service.dart';
 import '../theme.dart';
 import 'mode_screen.dart';
+import 'splash_screen.dart';
 
 class BallotScreen extends StatefulWidget {
   const BallotScreen({super.key});
@@ -140,7 +141,35 @@ class _BallotScreenState extends State<BallotScreen> {
       autofocus: true,
       onKeyEvent: _handleKey,
       child: Scaffold(
-        appBar: AppBar(title: const Text('Select Ballot')),
+        appBar: AppBar(
+          title: const Text('Select Ballot'),
+          actions: [
+            PopupMenuButton<String>(
+              onSelected: (value) {
+                if (value == 'start_over') {
+                  context.read<VotingProvider>().reset();
+                  Navigator.pushAndRemoveUntil(
+                    context,
+                    MaterialPageRoute(builder: (_) => const SplashScreen()),
+                    (route) => false,
+                  );
+                }
+              },
+              itemBuilder: (_) => [
+                const PopupMenuItem(
+                  value: 'start_over',
+                  child: Row(
+                    children: [
+                      Icon(Icons.refresh, size: 20, color: VotRiteTheme.primaryBlue),
+                      SizedBox(width: 8),
+                      Text('Start Over'),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+          ],
+        ),
         body: Column(
           children: [
             Padding(

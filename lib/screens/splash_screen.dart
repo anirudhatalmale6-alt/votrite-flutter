@@ -1,5 +1,7 @@
 import 'dart:math';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import '../providers/voting_provider.dart';
 import '../theme.dart';
 import '../services/tts_service.dart';
 import 'ballot_screen.dart';
@@ -37,6 +39,7 @@ class _SplashScreenState extends State<SplashScreen>
     );
     _fadeController.forward();
     TtsService().init();
+    context.read<VotingProvider>().reset();
     Future.delayed(const Duration(seconds: 3), () {
       if (mounted) {
         Navigator.pushReplacement(
