@@ -117,7 +117,7 @@ class VotingProvider extends ChangeNotifier {
 
   Future<void> loadPropositions() async {
     try {
-      propositions = await _api.getPropositions();
+      propositions = await _api.getPropositions(ballotId: selectedBallot?.ballotId);
     } catch (_) {
       propositions = [];
     }

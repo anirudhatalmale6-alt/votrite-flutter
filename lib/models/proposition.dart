@@ -27,7 +27,7 @@ class Proposition {
       propTitle: json['prop_title'] ?? json['title'] ?? '',
       propText: json['prop_text'] ?? json['text'] ?? '',
       propType: json['prop_type'] ?? json['type']?.toString() ?? '',
-      propAnswerType: json['prop_answer_type'] ?? json['type'] ?? 0,
+      propAnswerType: int.tryParse(json['prop_answer_type']?.toString() ?? '0') ?? 0,
     );
   }
 

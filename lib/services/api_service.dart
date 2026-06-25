@@ -74,8 +74,10 @@ class ApiService {
     throw Exception('Failed to load parties');
   }
 
-  Future<List<Proposition>> getPropositions() async {
-    final response = await http.get(Uri.parse('$baseUrl/proposition'));
+  Future<List<Proposition>> getPropositions({int? ballotId}) async {
+    var url = '$baseUrl/proposition';
+    if (ballotId != null) url += '?ballot_id=$ballotId';
+    final response = await http.get(Uri.parse(url));
     if (response.statusCode == 200) {
       final data = jsonDecode(response.body);
       final list = data['data'] as List? ?? [];
