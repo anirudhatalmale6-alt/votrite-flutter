@@ -5,6 +5,7 @@ import '../providers/voting_provider.dart';
 import '../services/tts_service.dart';
 import '../theme.dart';
 import 'help_screen.dart';
+import 'proposition_screen.dart';
 import 'race_screen.dart';
 import 'finish_screen.dart';
 
@@ -279,7 +280,13 @@ class _ReviewScreenState extends State<ReviewScreen> {
                               fontWeight: FontWeight.bold,
                             ),
                           ),
-                          onTap: () => setState(() => _highlightedIndex = idx),
+                          trailing: const Icon(Icons.edit, color: VotRiteTheme.primaryBlue, size: 20),
+                          onTap: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(builder: (_) => const PropositionScreen()),
+                            );
+                          },
                         ),
                       );
                     }),

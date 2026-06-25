@@ -191,10 +191,10 @@ class _SplashScreenState extends State<SplashScreen>
                       child: const Text(
                         'VotRite',
                         style: TextStyle(
-                          fontSize: 38,
+                          fontSize: 30,
                           fontWeight: FontWeight.w900,
                           color: Colors.white,
-                          letterSpacing: 4,
+                          letterSpacing: 3,
                         ),
                       ),
                     ),

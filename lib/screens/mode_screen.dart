@@ -16,7 +16,7 @@ class ModeScreen extends StatelessWidget {
           gradient: LinearGradient(
             begin: Alignment.topCenter,
             end: Alignment.bottomCenter,
-            colors: [Color(0xFF0A2463), Color(0xFF1565C0), Color(0xFF0D47A1)],
+            colors: [Color(0xFF1565C0), Color(0xFF42A5F5), Color(0xFF1976D2)],
           ),
         ),
         child: Stack(
@@ -59,77 +59,77 @@ class ModeScreen extends StatelessWidget {
             // Main content
             SafeArea(
               child: SingleChildScrollView(
-                padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+                padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 8),
                 child: Column(
                   children: [
-                    const SizedBox(height: 8),
+                    const SizedBox(height: 4),
                     // Logo
                     Container(
                       decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(20),
+                        borderRadius: BorderRadius.circular(16),
                         boxShadow: [
                           BoxShadow(
                             color: const Color(0xFFB31942).withOpacity(0.2),
-                            blurRadius: 16,
-                            offset: const Offset(0, 4),
+                            blurRadius: 12,
+                            offset: const Offset(0, 3),
                           ),
                         ],
                       ),
                       child: ClipRRect(
-                        borderRadius: BorderRadius.circular(20),
+                        borderRadius: BorderRadius.circular(16),
                         child: Image.asset(
                           'assets/images/votrite_logo.png',
-                          width: 64,
-                          height: 64,
+                          width: 50,
+                          height: 50,
                           fit: BoxFit.cover,
                           errorBuilder: (_, __, ___) => Container(
-                            width: 64, height: 64,
+                            width: 50, height: 50,
                             color: VotRiteTheme.white,
-                            child: const Icon(Icons.how_to_vote, size: 36, color: VotRiteTheme.darkBlue),
+                            child: const Icon(Icons.how_to_vote, size: 28, color: VotRiteTheme.darkBlue),
                           ),
                         ),
                       ),
                     ),
-                    const SizedBox(height: 10),
+                    const SizedBox(height: 6),
                     const Text(
                       'VotRite',
                       style: TextStyle(
-                        fontSize: 18,
+                        fontSize: 16,
                         fontWeight: FontWeight.w900,
                         color: Colors.white,
                         letterSpacing: 2,
                       ),
                     ),
-                    const SizedBox(height: 4),
+                    const SizedBox(height: 2),
                     const Text(
                       'How would you like to vote?',
                       style: TextStyle(
-                        fontSize: 13,
+                        fontSize: 12,
                         fontWeight: FontWeight.w500,
                         color: Colors.white,
                       ),
                       textAlign: TextAlign.center,
                     ),
-                    const SizedBox(height: 4),
+                    const SizedBox(height: 2),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        Container(width: 24, height: 2, color: const Color(0xFFB31942)),
-                        const SizedBox(width: 8),
+                        Container(width: 20, height: 2, color: const Color(0xFFB31942)),
+                        const SizedBox(width: 6),
                         Text(
                           'SELECT YOUR MODE',
                           style: TextStyle(
-                            fontSize: 10,
+                            fontSize: 9,
                             color: VotRiteTheme.accentGold.withOpacity(0.9),
                             letterSpacing: 2,
                             fontWeight: FontWeight.w600,
                           ),
                         ),
-                        const SizedBox(width: 8),
-                        Container(width: 24, height: 2, color: const Color(0xFFB31942)),
+                        const SizedBox(width: 6),
+                        Container(width: 20, height: 2, color: const Color(0xFFB31942)),
                       ],
                     ),
-                    const SizedBox(height: 20),
+                    const SizedBox(height: 12),
                     _ModeCard(
                       icon: Icons.touch_app,
                       title: 'Normal Mode',
@@ -142,7 +142,7 @@ class ModeScreen extends StatelessWidget {
                         );
                       },
                     ),
-                    const SizedBox(height: 12),
+                    const SizedBox(height: 10),
                     _ModeCard(
                       icon: Icons.accessibility_new,
                       title: 'Visually Impaired',
@@ -162,7 +162,7 @@ class ModeScreen extends StatelessWidget {
                         );
                       },
                     ),
-                    const SizedBox(height: 24),
+                    const SizedBox(height: 12),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: List.generate(
@@ -225,7 +225,7 @@ class _ModeCard extends StatelessWidget {
         borderRadius: BorderRadius.circular(16),
         onTap: onTap,
         child: Container(
-          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
+          padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(16),
             border: Border.all(color: accentColor.withOpacity(0.2), width: 1.5),
@@ -233,8 +233,8 @@ class _ModeCard extends StatelessWidget {
           child: Row(
             children: [
               Container(
-                width: 48,
-                height: 48,
+                width: 42,
+                height: 42,
                 decoration: BoxDecoration(
                   gradient: LinearGradient(
                     begin: Alignment.topLeft,
@@ -244,7 +244,7 @@ class _ModeCard extends StatelessWidget {
                   borderRadius: BorderRadius.circular(14),
                   border: Border.all(color: accentColor.withOpacity(0.2)),
                 ),
-                child: Icon(icon, size: 24, color: accentColor),
+                child: Icon(icon, size: 22, color: accentColor),
               ),
               const SizedBox(width: 16),
               Expanded(
