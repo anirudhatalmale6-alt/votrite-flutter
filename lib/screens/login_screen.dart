@@ -104,107 +104,208 @@ class _LoginScreenState extends State<LoginScreen> {
     final ballotName = context.read<VotingProvider>().selectedBallot?.election ?? 'Ballot';
 
     return Scaffold(
-      appBar: AppBar(title: const Text('Enter PIN')),
-      body: Center(
-        child: SingleChildScrollView(
-          padding: const EdgeInsets.all(32),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              ClipRRect(
-                borderRadius: BorderRadius.circular(16),
-                child: Image.asset(
-                  'assets/images/votrite_logo.png',
-                  width: 72,
-                  height: 72,
-                  fit: BoxFit.cover,
-                  errorBuilder: (_, __, ___) => const Icon(
-                    Icons.lock_outline,
-                    size: 64,
-                    color: VotRiteTheme.primaryBlue,
-                  ),
-                ),
-              ),
-              const SizedBox(height: 20),
-              Text(
-                ballotName,
-                style: Theme.of(context).textTheme.headlineMedium,
-                textAlign: TextAlign.center,
-              ),
-              const SizedBox(height: 8),
-              const Text(
-                'Enter your PIN code to begin voting',
-                style: TextStyle(fontSize: 16, color: Colors.grey),
-                textAlign: TextAlign.center,
-              ),
-              const SizedBox(height: 32),
-              SizedBox(
-                width: 280,
-                child: TextField(
-                  controller: _pinController,
-                  focusNode: _pinFocusNode,
-                  autofocus: false,
-                  obscureText: _obscurePin,
-                  keyboardType: TextInputType.number,
-                  inputFormatters: [FilteringTextInputFormatter.digitsOnly],
-                  textAlign: TextAlign.center,
-                  style: const TextStyle(fontSize: 28, letterSpacing: 12),
-                  maxLength: 10,
-                  decoration: InputDecoration(
-                    hintText: '----',
-                    hintStyle: const TextStyle(letterSpacing: 12),
-                    counterText: '',
-                    border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
-                    focusedBorder: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(12),
-                      borderSide: const BorderSide(color: VotRiteTheme.primaryBlue, width: 2),
-                    ),
-                    suffixIcon: IconButton(
-                      icon: Icon(_obscurePin ? Icons.visibility : Icons.visibility_off),
-                      onPressed: () => setState(() => _obscurePin = !_obscurePin),
+      body: Container(
+        decoration: const BoxDecoration(
+          gradient: LinearGradient(
+            begin: Alignment.topCenter,
+            end: Alignment.bottomCenter,
+            stops: [0.0, 0.35, 1.0],
+            colors: [Color(0xFF0A2463), Color(0xFF1565C0), Colors.white],
+          ),
+        ),
+        child: SafeArea(
+          child: Center(
+            child: SingleChildScrollView(
+              padding: const EdgeInsets.symmetric(horizontal: 28),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  const SizedBox(height: 16),
+                  // Stars row
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: List.generate(
+                      3,
+                      (i) => Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 5),
+                        child: Icon(Icons.star, size: 14, color: VotRiteTheme.accentGold.withOpacity(0.7)),
+                      ),
                     ),
                   ),
-                  onSubmitted: (_) => _login(),
-                ),
-              ),
-              if (_error != null) ...[
-                const SizedBox(height: 16),
-                Container(
-                  padding: const EdgeInsets.all(12),
-                  decoration: BoxDecoration(
-                    color: Colors.red.shade50,
-                    borderRadius: BorderRadius.circular(8),
+                  const SizedBox(height: 12),
+                  // Logo with glow
+                  Container(
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(20),
+                      boxShadow: [
+                        BoxShadow(
+                          color: const Color(0xFFB31942).withOpacity(0.2),
+                          blurRadius: 16,
+                          offset: const Offset(0, 4),
+                        ),
+                      ],
+                    ),
+                    child: ClipRRect(
+                      borderRadius: BorderRadius.circular(20),
+                      child: Image.asset(
+                        'assets/images/votrite_logo.png',
+                        width: 80,
+                        height: 80,
+                        fit: BoxFit.cover,
+                        errorBuilder: (_, __, ___) => Container(
+                          width: 80, height: 80,
+                          color: VotRiteTheme.white,
+                          child: const Icon(Icons.how_to_vote, size: 40, color: VotRiteTheme.darkBlue),
+                        ),
+                      ),
+                    ),
                   ),
-                  child: Row(
-                    mainAxisSize: MainAxisSize.min,
+                  const SizedBox(height: 14),
+                  Text(
+                    ballotName,
+                    style: const TextStyle(
+                      fontSize: 20,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.white,
+                    ),
+                    textAlign: TextAlign.center,
+                  ),
+                  const SizedBox(height: 4),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      const Icon(Icons.error, color: VotRiteTheme.errorRed),
+                      Container(width: 20, height: 2, color: const Color(0xFFB31942).withOpacity(0.6)),
                       const SizedBox(width: 8),
-                      Flexible(child: Text(_error!, style: const TextStyle(color: VotRiteTheme.errorRed))),
+                      Text(
+                        'SECURE VOTER LOGIN',
+                        style: TextStyle(
+                          fontSize: 11,
+                          color: VotRiteTheme.accentGold.withOpacity(0.9),
+                          letterSpacing: 2,
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
+                      const SizedBox(width: 8),
+                      Container(width: 20, height: 2, color: const Color(0xFFB31942).withOpacity(0.6)),
                     ],
                   ),
-                ),
-              ],
-              const SizedBox(height: 32),
-              SizedBox(
-                width: 280,
-                child: ElevatedButton(
-                  onPressed: _loading ? null : _login,
-                  child: _loading
-                      ? const SizedBox(
-                          height: 24,
-                          width: 24,
-                          child: CircularProgressIndicator(color: Colors.white, strokeWidth: 2),
-                        )
-                      : const Text('Login'),
-                ),
+                  const SizedBox(height: 28),
+                  // PIN card
+                  Container(
+                    padding: const EdgeInsets.all(28),
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(20),
+                      boxShadow: [
+                        BoxShadow(
+                          color: VotRiteTheme.primaryBlue.withOpacity(0.15),
+                          blurRadius: 20,
+                          offset: const Offset(0, 8),
+                        ),
+                      ],
+                    ),
+                    child: Column(
+                      children: [
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Icon(Icons.lock_outline, size: 20, color: VotRiteTheme.primaryBlue.withOpacity(0.6)),
+                            const SizedBox(width: 8),
+                            const Text(
+                              'Enter your PIN code',
+                              style: TextStyle(
+                                fontSize: 16,
+                                fontWeight: FontWeight.w600,
+                                color: VotRiteTheme.darkBlue,
+                              ),
+                            ),
+                          ],
+                        ),
+                        const SizedBox(height: 20),
+                        SizedBox(
+                          width: 260,
+                          child: TextField(
+                            controller: _pinController,
+                            focusNode: _pinFocusNode,
+                            autofocus: false,
+                            obscureText: _obscurePin,
+                            keyboardType: TextInputType.number,
+                            inputFormatters: [FilteringTextInputFormatter.digitsOnly],
+                            textAlign: TextAlign.center,
+                            style: const TextStyle(fontSize: 28, letterSpacing: 12),
+                            maxLength: 10,
+                            decoration: InputDecoration(
+                              hintText: '----',
+                              hintStyle: const TextStyle(letterSpacing: 12, color: Colors.grey),
+                              counterText: '',
+                              filled: true,
+                              fillColor: Colors.grey.shade50,
+                              border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
+                              enabledBorder: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(12),
+                                borderSide: BorderSide(color: Colors.grey.shade300),
+                              ),
+                              focusedBorder: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(12),
+                                borderSide: const BorderSide(color: VotRiteTheme.primaryBlue, width: 2),
+                              ),
+                              suffixIcon: IconButton(
+                                icon: Icon(_obscurePin ? Icons.visibility : Icons.visibility_off),
+                                onPressed: () => setState(() => _obscurePin = !_obscurePin),
+                              ),
+                            ),
+                            onSubmitted: (_) => _login(),
+                          ),
+                        ),
+                        if (_error != null) ...[
+                          const SizedBox(height: 14),
+                          Container(
+                            padding: const EdgeInsets.all(10),
+                            decoration: BoxDecoration(
+                              color: Colors.red.shade50,
+                              borderRadius: BorderRadius.circular(8),
+                              border: Border.all(color: Colors.red.shade200),
+                            ),
+                            child: Row(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                const Icon(Icons.error_outline, color: VotRiteTheme.errorRed, size: 18),
+                                const SizedBox(width: 8),
+                                Flexible(child: Text(_error!, style: const TextStyle(color: VotRiteTheme.errorRed, fontSize: 13))),
+                              ],
+                            ),
+                          ),
+                        ],
+                        const SizedBox(height: 20),
+                        SizedBox(
+                          width: double.infinity,
+                          height: 52,
+                          child: ElevatedButton(
+                            onPressed: _loading ? null : _login,
+                            style: ElevatedButton.styleFrom(
+                              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                            ),
+                            child: _loading
+                                ? const SizedBox(
+                                    height: 22, width: 22,
+                                    child: CircularProgressIndicator(color: Colors.white, strokeWidth: 2),
+                                  )
+                                : const Text('Login', style: TextStyle(fontSize: 18)),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  const SizedBox(height: 20),
+                  TextButton.icon(
+                    icon: const Icon(Icons.arrow_back, size: 18),
+                    label: const Text('Back', style: TextStyle(fontSize: 15)),
+                    onPressed: () => Navigator.maybePop(context),
+                  ),
+                  const SizedBox(height: 16),
+                ],
               ),
-              const SizedBox(height: 16),
-              TextButton(
-                onPressed: () => Navigator.maybePop(context),
-                child: const Text('Back', style: TextStyle(fontSize: 16)),
-              ),
-            ],
+            ),
           ),
         ),
       ),
