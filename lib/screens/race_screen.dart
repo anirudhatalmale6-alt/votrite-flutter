@@ -400,24 +400,24 @@ class _RaceScreenState extends State<RaceScreen> {
                         'Select ${race?.minNumOfVotes ?? 0} to ${race?.maxNumOfVotes ?? 1} candidates.',
                     child: Container(
                       width: double.infinity,
-                      padding: const EdgeInsets.all(16),
+                      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
                       color: VotRiteTheme.primaryBlue.withValues(alpha: 0.05),
                       child: Column(
                         children: [
                           Text(
                             'Race ${provider.currentRaceIndex + 1} of ${provider.races.length}',
-                            style: const TextStyle(fontSize: 14, color: Colors.grey),
+                            style: const TextStyle(fontSize: 12, color: Colors.grey),
                           ),
-                          const SizedBox(height: 4),
+                          const SizedBox(height: 2),
                           Text(
                             race?.raceName ?? '',
-                            style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                            style: const TextStyle(fontSize: 17, fontWeight: FontWeight.bold),
                             textAlign: TextAlign.center,
                           ),
-                          const SizedBox(height: 4),
+                          const SizedBox(height: 2),
                           Text(
                             'Select ${race?.minNumOfVotes ?? 0} to ${race?.maxNumOfVotes ?? 1} candidate(s)',
-                            style: const TextStyle(fontSize: 14, color: VotRiteTheme.primaryBlue),
+                            style: const TextStyle(fontSize: 12, color: VotRiteTheme.primaryBlue),
                           ),
                         ],
                       ),
@@ -470,7 +470,7 @@ class _RaceScreenState extends State<RaceScreen> {
                                       ? VotRiteTheme.successGreen.withValues(alpha: 0.08)
                                       : null,
                                   child: ListTile(
-                                    contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                                    contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
                                     leading: CircleAvatar(
                                       backgroundColor: cand.isSelected
                                           ? VotRiteTheme.successGreen
@@ -484,7 +484,7 @@ class _RaceScreenState extends State<RaceScreen> {
                                     ),
                                     title: Text(
                                       cand.candidateName,
-                                      style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+                                      style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 15),
                                     ),
                                     subtitle: cand.partyName.isNotEmpty
                                         ? Text(cand.partyName)
@@ -532,7 +532,7 @@ class _RaceScreenState extends State<RaceScreen> {
                             style: OutlinedButton.styleFrom(
                               padding: const EdgeInsets.symmetric(vertical: 16),
                             ),
-                            child: const Text('Back', style: TextStyle(fontSize: 18)),
+                            child: const Text('Back', style: TextStyle(fontSize: 16)),
                           ),
                         ),
                         const SizedBox(width: 16),
@@ -541,7 +541,7 @@ class _RaceScreenState extends State<RaceScreen> {
                             onPressed: _saveAndProceed,
                             child: Text(
                               provider.currentRaceIndex < provider.races.length - 1 ? 'Next Race' : 'Continue',
-                              style: const TextStyle(fontSize: 18),
+                              style: const TextStyle(fontSize: 16),
                             ),
                           ),
                         ),

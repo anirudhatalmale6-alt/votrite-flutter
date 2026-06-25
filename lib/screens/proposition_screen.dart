@@ -144,17 +144,17 @@ class _PropositionScreenState extends State<PropositionScreen> {
                 backgroundColor: Colors.grey.shade200,
                 valueColor: const AlwaysStoppedAnimation(VotRiteTheme.primaryBlue),
               ),
-              const SizedBox(height: 24),
+              const SizedBox(height: 16),
               Semantics(
                 header: true,
                 label: 'Proposition ${_currentPropIndex + 1} of ${provider.propositions.length}. ${prop.propTitle}.',
                 child: Text(
                   prop.propTitle,
-                  style: Theme.of(context).textTheme.headlineMedium,
+                  style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: VotRiteTheme.darkBlue),
                   textAlign: TextAlign.center,
                 ),
               ),
-              const SizedBox(height: 16),
+              const SizedBox(height: 12),
               Expanded(
                 child: SingleChildScrollView(
                   child: Semantics(
@@ -168,7 +168,7 @@ class _PropositionScreenState extends State<PropositionScreen> {
                       ),
                       child: Text(
                         prop.propText,
-                        style: const TextStyle(fontSize: 16, height: 1.5),
+                        style: const TextStyle(fontSize: 14, height: 1.5),
                       ),
                     ),
                   ),
@@ -208,7 +208,7 @@ class _PropositionScreenState extends State<PropositionScreen> {
                         style: OutlinedButton.styleFrom(
                           padding: const EdgeInsets.symmetric(vertical: 16),
                         ),
-                        child: const Text('Previous', style: TextStyle(fontSize: 18)),
+                        child: const Text('Previous', style: TextStyle(fontSize: 16)),
                       ),
                     ),
                   if (_currentPropIndex > 0) const SizedBox(width: 16),
@@ -217,7 +217,7 @@ class _PropositionScreenState extends State<PropositionScreen> {
                       onPressed: _nextProp,
                       child: Text(
                         _currentPropIndex < provider.propositions.length - 1 ? 'Next' : 'Review',
-                        style: const TextStyle(fontSize: 18),
+                        style: const TextStyle(fontSize: 16),
                       ),
                     ),
                   ),
@@ -256,7 +256,7 @@ class _VoteButton extends StatelessWidget {
         onTap: onTap,
         child: AnimatedContainer(
           duration: const Duration(milliseconds: 200),
-          padding: const EdgeInsets.symmetric(vertical: 20),
+          padding: const EdgeInsets.symmetric(vertical: 16),
           decoration: BoxDecoration(
             color: isSelected ? color : Colors.grey.shade200,
             borderRadius: BorderRadius.circular(12),
@@ -269,14 +269,14 @@ class _VoteButton extends StatelessWidget {
             children: [
               Icon(
                 icon,
-                size: 36,
+                size: 28,
                 color: isSelected ? Colors.white : Colors.grey.shade600,
               ),
-              const SizedBox(height: 8),
+              const SizedBox(height: 6),
               Text(
                 label,
                 style: TextStyle(
-                  fontSize: 20,
+                  fontSize: 17,
                   fontWeight: FontWeight.bold,
                   color: isSelected ? Colors.white : Colors.grey.shade600,
                 ),

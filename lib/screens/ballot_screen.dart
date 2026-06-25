@@ -240,7 +240,7 @@ class _BallotScreenState extends State<BallotScreen> {
                                           : BorderSide.none,
                                     ),
                                     child: ListTile(
-                                      contentPadding: const EdgeInsets.all(16),
+                                      contentPadding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
                                       leading: CircleAvatar(
                                         backgroundColor: VotRiteTheme.primaryBlue,
                                         child: Text(
@@ -250,7 +250,7 @@ class _BallotScreenState extends State<BallotScreen> {
                                       ),
                                       title: Text(
                                         ballot.election,
-                                        style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+                                        style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 15),
                                       ),
                                       subtitle: Column(
                                         crossAxisAlignment: CrossAxisAlignment.start,
