@@ -156,7 +156,7 @@ class _PropositionScreenState extends State<PropositionScreen> {
                 label: 'Proposition ${_currentPropIndex + 1} of ${provider.propositions.length}. ${prop.propTitle}.',
                 child: Text(
                   prop.propTitle,
-                  style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: VotRiteTheme.darkBlue),
+                  style: const TextStyle(fontSize: 15, fontWeight: FontWeight.bold, color: VotRiteTheme.darkBlue),
                   textAlign: TextAlign.center,
                 ),
               ),
@@ -174,7 +174,7 @@ class _PropositionScreenState extends State<PropositionScreen> {
                       ),
                       child: Text(
                         prop.propText,
-                        style: const TextStyle(fontSize: 14, height: 1.5),
+                        style: const TextStyle(fontSize: 13, height: 1.5),
                       ),
                     ),
                   ),
@@ -214,7 +214,7 @@ class _PropositionScreenState extends State<PropositionScreen> {
                       setState(() {});
                       TtsService().speak('Cleared vote on ${prop.propTitle}.');
                     },
-                    child: const Text('Clear Selection', style: TextStyle(fontSize: 13, color: Colors.grey)),
+                    child: const Text('Clear Selection', style: TextStyle(fontSize: 12, color: Colors.grey)),
                   ),
                 ),
               const SizedBox(height: 10),
@@ -227,7 +227,7 @@ class _PropositionScreenState extends State<PropositionScreen> {
                         style: OutlinedButton.styleFrom(
                           padding: const EdgeInsets.symmetric(vertical: 12),
                         ),
-                        child: const Text('Previous', style: TextStyle(fontSize: 14)),
+                        child: const Text('Previous', style: TextStyle(fontSize: 13)),
                       ),
                     ),
                   if (_currentPropIndex > 0) const SizedBox(width: 12),
@@ -239,7 +239,7 @@ class _PropositionScreenState extends State<PropositionScreen> {
                       ),
                       child: Text(
                         _currentPropIndex < provider.propositions.length - 1 ? 'Next' : 'Review',
-                        style: const TextStyle(fontSize: 14),
+                        style: const TextStyle(fontSize: 13),
                       ),
                     ),
                   ),
@@ -298,7 +298,7 @@ class _VoteButton extends StatelessWidget {
               Text(
                 label,
                 style: TextStyle(
-                  fontSize: 17,
+                  fontSize: 14,
                   fontWeight: FontWeight.bold,
                   color: isSelected ? Colors.white : Colors.grey.shade600,
                 ),

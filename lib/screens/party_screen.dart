@@ -146,7 +146,7 @@ class _PartyScreenState extends State<PartyScreen> {
                                 : const Icon(Icons.groups, size: 48, color: VotRiteTheme.primaryBlue),
                             title: Text(
                               party.partyName,
-                              style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                              style: const TextStyle(fontSize: 14, fontWeight: FontWeight.bold),
                             ),
                             trailing: isHighlighted
                                 ? const Icon(Icons.arrow_forward_ios, color: VotRiteTheme.primaryBlue)

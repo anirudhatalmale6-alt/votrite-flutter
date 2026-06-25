@@ -411,7 +411,7 @@ class _RaceScreenState extends State<RaceScreen> {
                           const SizedBox(height: 2),
                           Text(
                             race?.raceName ?? '',
-                            style: const TextStyle(fontSize: 17, fontWeight: FontWeight.bold),
+                            style: const TextStyle(fontSize: 14, fontWeight: FontWeight.bold),
                             textAlign: TextAlign.center,
                           ),
                           const SizedBox(height: 2),
@@ -484,7 +484,7 @@ class _RaceScreenState extends State<RaceScreen> {
                                     ),
                                     title: Text(
                                       cand.candidateName,
-                                      style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 15),
+                                      style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 13),
                                     ),
                                     subtitle: cand.partyName.isNotEmpty
                                         ? Text(cand.partyName)
@@ -497,7 +497,7 @@ class _RaceScreenState extends State<RaceScreen> {
                                               '#${cand.rankValue}',
                                               style: const TextStyle(
                                                 fontWeight: FontWeight.bold,
-                                                fontSize: 14,
+                                                fontSize: 12,
                                                 color: Colors.black,
                                               ),
                                             ),
@@ -532,7 +532,7 @@ class _RaceScreenState extends State<RaceScreen> {
                             style: OutlinedButton.styleFrom(
                               padding: const EdgeInsets.symmetric(vertical: 16),
                             ),
-                            child: const Text('Back', style: TextStyle(fontSize: 16)),
+                            child: const Text('Back', style: TextStyle(fontSize: 14)),
                           ),
                         ),
                         const SizedBox(width: 16),
@@ -541,7 +541,7 @@ class _RaceScreenState extends State<RaceScreen> {
                             onPressed: _saveAndProceed,
                             child: Text(
                               provider.currentRaceIndex < provider.races.length - 1 ? 'Next Race' : 'Continue',
-                              style: const TextStyle(fontSize: 16),
+                              style: const TextStyle(fontSize: 14),
                             ),
                           ),
                         ),

@@ -94,7 +94,7 @@ class ModeScreen extends StatelessWidget {
                     const Text(
                       'VotRite',
                       style: TextStyle(
-                        fontSize: 22,
+                        fontSize: 18,
                         fontWeight: FontWeight.w900,
                         color: Colors.white,
                         letterSpacing: 2,
@@ -104,7 +104,7 @@ class ModeScreen extends StatelessWidget {
                     const Text(
                       'How would you like to vote?',
                       style: TextStyle(
-                        fontSize: 15,
+                        fontSize: 13,
                         fontWeight: FontWeight.w500,
                         color: Colors.white,
                       ),
@@ -185,7 +185,7 @@ class ModeScreen extends StatelessWidget {
                     const SizedBox(height: 8),
                     TextButton.icon(
                       icon: const Icon(Icons.arrow_back, color: Colors.white70, size: 16),
-                      label: const Text('Back', style: TextStyle(fontSize: 14, color: Colors.white70)),
+                      label: const Text('Back', style: TextStyle(fontSize: 12, color: Colors.white70)),
                       onPressed: () => Navigator.maybePop(context),
                     ),
                   ],
@@ -254,7 +254,7 @@ class _ModeCard extends StatelessWidget {
                     Text(
                       title,
                       style: TextStyle(
-                        fontSize: 16,
+                        fontSize: 14,
                         fontWeight: FontWeight.bold,
                         color: accentColor == VotRiteTheme.primaryBlue
                             ? VotRiteTheme.darkBlue
@@ -264,7 +264,7 @@ class _ModeCard extends StatelessWidget {
                     const SizedBox(height: 4),
                     Text(
                       subtitle,
-                      style: TextStyle(fontSize: 12, color: Colors.grey.shade600),
+                      style: TextStyle(fontSize: 11, color: Colors.grey.shade600),
                     ),
                   ],
                 ),

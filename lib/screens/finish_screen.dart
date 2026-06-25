@@ -93,7 +93,7 @@ class _FinishScreenState extends State<FinishScreen> with SingleTickerProviderSt
                 const Text(
                   'Ballot Cast!',
                   style: TextStyle(
-                    fontSize: 36,
+                    fontSize: 28,
                     fontWeight: FontWeight.bold,
                     color: Colors.white,
                   ),
@@ -103,7 +103,7 @@ class _FinishScreenState extends State<FinishScreen> with SingleTickerProviderSt
                   'Your vote has been recorded successfully.\nThank you for participating.',
                   textAlign: TextAlign.center,
                   style: TextStyle(
-                    fontSize: 18,
+                    fontSize: 15,
                     color: Colors.white70,
                     height: 1.5,
                   ),
@@ -116,7 +116,7 @@ class _FinishScreenState extends State<FinishScreen> with SingleTickerProviderSt
                     side: const BorderSide(color: Colors.white, width: 2),
                     padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 16),
                   ),
-                  child: const Text('Done', style: TextStyle(fontSize: 18)),
+                  child: const Text('Done', style: TextStyle(fontSize: 14)),
                 ),
               ],
             ),

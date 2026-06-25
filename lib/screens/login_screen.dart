@@ -197,7 +197,7 @@ class _LoginScreenState extends State<LoginScreen> {
                   Text(
                     ballotName,
                     style: const TextStyle(
-                      fontSize: 16,
+                      fontSize: 14,
                       fontWeight: FontWeight.bold,
                       color: Colors.white,
                     ),
@@ -247,7 +247,7 @@ class _LoginScreenState extends State<LoginScreen> {
                             const Text(
                               'Enter your PIN code',
                               style: TextStyle(
-                                fontSize: 14,
+                                fontSize: 13,
                                 fontWeight: FontWeight.w600,
                                 color: VotRiteTheme.darkBlue,
                               ),
@@ -265,7 +265,7 @@ class _LoginScreenState extends State<LoginScreen> {
                             keyboardType: TextInputType.number,
                             inputFormatters: [FilteringTextInputFormatter.digitsOnly],
                             textAlign: TextAlign.center,
-                            style: const TextStyle(fontSize: 22, letterSpacing: 8),
+                            style: const TextStyle(fontSize: 18, letterSpacing: 6),
                             maxLength: 10,
                             decoration: InputDecoration(
                               hintText: '----',
@@ -322,7 +322,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                     height: 20, width: 20,
                                     child: CircularProgressIndicator(color: Colors.white, strokeWidth: 2),
                                   )
-                                : const Text('Login', style: TextStyle(fontSize: 15)),
+                                : const Text('Login', style: TextStyle(fontSize: 14)),
                           ),
                         ),
                       ],
@@ -331,7 +331,7 @@ class _LoginScreenState extends State<LoginScreen> {
                   const SizedBox(height: 20),
                   TextButton.icon(
                     icon: const Icon(Icons.arrow_back, size: 18),
-                    label: const Text('Back', style: TextStyle(fontSize: 15)),
+                    label: const Text('Back', style: TextStyle(fontSize: 13)),
                     onPressed: () => Navigator.maybePop(context),
                   ),
                         const SizedBox(height: 16),

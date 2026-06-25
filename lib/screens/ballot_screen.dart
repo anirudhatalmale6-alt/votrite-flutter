@@ -204,7 +204,7 @@ class _BallotScreenState extends State<BallotScreen> {
                             children: [
                               const Icon(Icons.error_outline, size: 48, color: VotRiteTheme.errorRed),
                               const SizedBox(height: 16),
-                              Text(_error!, style: const TextStyle(fontSize: 16)),
+                              Text(_error!, style: const TextStyle(fontSize: 13)),
                               const SizedBox(height: 16),
                               ElevatedButton(
                                 onPressed: () => _loadBallots(),
@@ -215,7 +215,7 @@ class _BallotScreenState extends State<BallotScreen> {
                         )
                       : _ballots.isEmpty
                           ? const Center(
-                              child: Text('No active ballots found', style: TextStyle(fontSize: 18)),
+                              child: Text('No active ballots found', style: TextStyle(fontSize: 14)),
                             )
                           : ListView.builder(
                               itemCount: _ballots.length,
@@ -250,7 +250,7 @@ class _BallotScreenState extends State<BallotScreen> {
                                       ),
                                       title: Text(
                                         ballot.election,
-                                        style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 15),
+                                        style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 13),
                                       ),
                                       subtitle: Column(
                                         crossAxisAlignment: CrossAxisAlignment.start,

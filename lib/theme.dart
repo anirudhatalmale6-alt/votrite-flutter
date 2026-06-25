@@ -30,7 +30,7 @@ class VotRiteTheme {
         elevation: 2,
         centerTitle: true,
         titleTextStyle: TextStyle(
-          fontSize: 20,
+          fontSize: 17,
           fontWeight: FontWeight.bold,
           color: white,
         ),
@@ -39,16 +39,16 @@ class VotRiteTheme {
         style: ElevatedButton.styleFrom(
           backgroundColor: primaryBlue,
           foregroundColor: white,
-          padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 14),
-          textStyle: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+          padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
+          textStyle: const TextStyle(fontSize: 14, fontWeight: FontWeight.bold),
           shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
         ),
       ),
       textTheme: const TextTheme(
-        headlineLarge: TextStyle(fontSize: 24, fontWeight: FontWeight.bold, color: darkBlue),
-        headlineMedium: TextStyle(fontSize: 19, fontWeight: FontWeight.bold, color: darkBlue),
-        bodyLarge: TextStyle(fontSize: 16, color: darkGray),
-        bodyMedium: TextStyle(fontSize: 14, color: darkGray),
+        headlineLarge: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: darkBlue),
+        headlineMedium: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: darkBlue),
+        bodyLarge: TextStyle(fontSize: 14, color: darkGray),
+        bodyMedium: TextStyle(fontSize: 13, color: darkGray),
       ),
     );
   }

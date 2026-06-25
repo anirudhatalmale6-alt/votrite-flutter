@@ -40,7 +40,7 @@ class HelpScreen extends StatelessWidget {
                     'Accessibility Guide',
                     style: TextStyle(
                       color: Colors.white,
-                      fontSize: 22,
+                      fontSize: 18,
                       fontWeight: FontWeight.bold,
                     ),
                   ),
@@ -119,7 +119,7 @@ class HelpScreen extends StatelessWidget {
                   child: ElevatedButton.icon(
                     onPressed: () => _readAllHelp(),
                     icon: const Icon(Icons.volume_up),
-                    label: const Text('Read All Help Aloud', style: TextStyle(fontSize: 18)),
+                    label: const Text('Read All Help Aloud', style: TextStyle(fontSize: 14)),
                     style: ElevatedButton.styleFrom(
                       padding: const EdgeInsets.symmetric(vertical: 16),
                     ),
@@ -147,7 +147,7 @@ class HelpScreen extends StatelessWidget {
               Text(
                 title,
                 style: const TextStyle(
-                  fontSize: 20,
+                  fontSize: 16,
                   fontWeight: FontWeight.bold,
                   color: VotRiteTheme.primaryBlue,
                 ),
@@ -174,7 +174,7 @@ class HelpScreen extends StatelessWidget {
                     item.key,
                     style: const TextStyle(
                       fontWeight: FontWeight.bold,
-                      fontSize: 14,
+                      fontSize: 13,
                       color: VotRiteTheme.primaryBlue,
                     ),
                   ),
@@ -183,7 +183,7 @@ class HelpScreen extends StatelessWidget {
                 Expanded(
                   child: Text(
                     item.description,
-                    style: const TextStyle(fontSize: 16),
+                    style: const TextStyle(fontSize: 13),
                   ),
                 ),
               ],

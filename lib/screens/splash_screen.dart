@@ -191,7 +191,7 @@ class _SplashScreenState extends State<SplashScreen>
                       child: const Text(
                         'VotRite',
                         style: TextStyle(
-                          fontSize: 48,
+                          fontSize: 38,
                           fontWeight: FontWeight.w900,
                           color: Colors.white,
                           letterSpacing: 4,
@@ -212,7 +212,7 @@ class _SplashScreenState extends State<SplashScreen>
                         const Text(
                           'ACCESSIBLE MOBILE VOTING',
                           style: TextStyle(
-                            fontSize: 13,
+                            fontSize: 11,
                             color: VotRiteTheme.accentGold,
                             letterSpacing: 3,
                             fontWeight: FontWeight.w500,
@@ -230,7 +230,7 @@ class _SplashScreenState extends State<SplashScreen>
                     Text(
                       'Voterite Inc.',
                       style: TextStyle(
-                        fontSize: 14,
+                        fontSize: 12,
                         color: Colors.white.withOpacity(0.6),
                         letterSpacing: 1,
                       ),

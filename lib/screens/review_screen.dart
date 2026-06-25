@@ -188,7 +188,7 @@ class _ReviewScreenState extends State<ReviewScreen> {
                   SizedBox(width: 6),
                   Text(
                     'Tap any item to change your vote',
-                    style: TextStyle(fontSize: 13, fontWeight: FontWeight.w500),
+                    style: TextStyle(fontSize: 12, fontWeight: FontWeight.w500),
                   ),
                 ],
               ),
@@ -199,7 +199,7 @@ class _ReviewScreenState extends State<ReviewScreen> {
                 children: [
                   const Text(
                     'Races',
-                    style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: VotRiteTheme.darkBlue),
+                    style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold, color: VotRiteTheme.darkBlue),
                   ),
                   const SizedBox(height: 8),
                   ...provider.raceResults.asMap().entries.map((entry) {
@@ -218,14 +218,14 @@ class _ReviewScreenState extends State<ReviewScreen> {
                         dense: true,
                         title: Text(
                           result.raceName,
-                          style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 14),
+                          style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 13),
                         ),
                         subtitle: Text(
                           result.selectedCandidates.isEmpty
                               ? 'No selection'
                               : result.selectedCandidates.map((c) => c.candidateName).join(', '),
                           style: TextStyle(
-                            fontSize: 13,
+                            fontSize: 12,
                             color: result.selectedCandidates.isEmpty
                                 ? VotRiteTheme.errorRed
                                 : VotRiteTheme.successGreen,
@@ -246,7 +246,7 @@ class _ReviewScreenState extends State<ReviewScreen> {
                     const SizedBox(height: 16),
                     const Text(
                       'Propositions',
-                      style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: VotRiteTheme.darkBlue),
+                      style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold, color: VotRiteTheme.darkBlue),
                     ),
                     const SizedBox(height: 8),
                     ...provider.propositions.asMap().entries.map((entry) {
@@ -265,7 +265,7 @@ class _ReviewScreenState extends State<ReviewScreen> {
                           dense: true,
                           title: Text(
                             prop.propTitle,
-                            style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 14),
+                            style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 13),
                           ),
                           subtitle: Text(
                             prop.vote == 0
@@ -274,7 +274,7 @@ class _ReviewScreenState extends State<ReviewScreen> {
                                     ? prop.yesLabel
                                     : prop.noLabel,
                             style: TextStyle(
-                              fontSize: 13,
+                              fontSize: 12,
                               color: prop.vote == 0 ? VotRiteTheme.errorRed : VotRiteTheme.successGreen,
                               fontWeight: FontWeight.bold,
                             ),
@@ -303,7 +303,7 @@ class _ReviewScreenState extends State<ReviewScreen> {
                         : const Icon(Icons.how_to_vote),
                     label: Text(
                       provider.isSubmitting ? 'Submitting...' : 'Cast Ballot',
-                      style: const TextStyle(fontSize: 16),
+                      style: const TextStyle(fontSize: 14),
                     ),
                     style: ElevatedButton.styleFrom(
                       backgroundColor: VotRiteTheme.successGreen,
@@ -313,7 +313,7 @@ class _ReviewScreenState extends State<ReviewScreen> {
                   const SizedBox(height: 8),
                   TextButton(
                     onPressed: () => Navigator.maybePop(context),
-                    child: const Text('Go Back', style: TextStyle(fontSize: 16)),
+                    child: const Text('Go Back', style: TextStyle(fontSize: 14)),
                   ),
                 ],
               ),
