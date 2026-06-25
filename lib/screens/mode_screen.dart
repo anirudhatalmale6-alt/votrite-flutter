@@ -58,103 +58,78 @@ class ModeScreen extends StatelessWidget {
             ),
             // Main content
             SafeArea(
-              child: Padding(
+              child: SingleChildScrollView(
                 padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
                 child: Column(
                   children: [
-                    const SizedBox(height: 16),
-                    // Stars row
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: List.generate(
-                        3,
-                        (i) => Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 6),
-                          child: Icon(Icons.star, size: 14, color: VotRiteTheme.accentGold.withOpacity(0.6)),
-                        ),
-                      ),
-                    ),
-                    const SizedBox(height: 12),
+                    const SizedBox(height: 8),
                     // Logo
                     Container(
                       decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(24),
+                        borderRadius: BorderRadius.circular(20),
                         boxShadow: [
                           BoxShadow(
-                            color: const Color(0xFFB31942).withOpacity(0.25),
-                            blurRadius: 20,
-                            offset: const Offset(0, 6),
-                          ),
-                          BoxShadow(
-                            color: Colors.blue.withOpacity(0.15),
-                            blurRadius: 30,
-                            spreadRadius: 3,
+                            color: const Color(0xFFB31942).withOpacity(0.2),
+                            blurRadius: 16,
+                            offset: const Offset(0, 4),
                           ),
                         ],
                       ),
                       child: ClipRRect(
-                        borderRadius: BorderRadius.circular(24),
+                        borderRadius: BorderRadius.circular(20),
                         child: Image.asset(
                           'assets/images/votrite_logo.png',
-                          width: 80,
-                          height: 80,
+                          width: 64,
+                          height: 64,
                           fit: BoxFit.cover,
                           errorBuilder: (_, __, ___) => Container(
-                            width: 80, height: 80,
+                            width: 64, height: 64,
                             color: VotRiteTheme.white,
-                            child: const Icon(Icons.how_to_vote, size: 48, color: VotRiteTheme.darkBlue),
+                            child: const Icon(Icons.how_to_vote, size: 36, color: VotRiteTheme.darkBlue),
                           ),
                         ),
                       ),
                     ),
-                    const SizedBox(height: 16),
-                    // VotRite title
-                    ShaderMask(
-                      shaderCallback: (bounds) => const LinearGradient(
-                        colors: [Colors.white, Color(0xFFE8E8E8), Colors.white],
-                      ).createShader(bounds),
-                      child: const Text(
-                        'VotRite',
-                        style: TextStyle(
-                          fontSize: 26,
-                          fontWeight: FontWeight.w900,
-                          color: Colors.white,
-                          letterSpacing: 3,
-                        ),
+                    const SizedBox(height: 10),
+                    const Text(
+                      'VotRite',
+                      style: TextStyle(
+                        fontSize: 22,
+                        fontWeight: FontWeight.w900,
+                        color: Colors.white,
+                        letterSpacing: 2,
                       ),
                     ),
-                    const SizedBox(height: 8),
-                    // Heading with red accent lines
+                    const SizedBox(height: 4),
                     const Text(
                       'How would you like to vote?',
                       style: TextStyle(
-                        fontSize: 17,
+                        fontSize: 15,
                         fontWeight: FontWeight.w500,
                         color: Colors.white,
                       ),
                       textAlign: TextAlign.center,
                     ),
-                    const SizedBox(height: 6),
+                    const SizedBox(height: 4),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        Container(width: 30, height: 2, color: const Color(0xFFB31942)),
-                        const SizedBox(width: 10),
+                        Container(width: 24, height: 2, color: const Color(0xFFB31942)),
+                        const SizedBox(width: 8),
                         Text(
                           'SELECT YOUR MODE',
                           style: TextStyle(
-                            fontSize: 11,
+                            fontSize: 10,
                             color: VotRiteTheme.accentGold.withOpacity(0.9),
-                            letterSpacing: 3,
+                            letterSpacing: 2,
                             fontWeight: FontWeight.w600,
                           ),
                         ),
-                        const SizedBox(width: 10),
-                        Container(width: 30, height: 2, color: const Color(0xFFB31942)),
+                        const SizedBox(width: 8),
+                        Container(width: 24, height: 2, color: const Color(0xFFB31942)),
                       ],
                     ),
-                    const SizedBox(height: 28),
-                    // Normal Mode card
+                    const SizedBox(height: 20),
                     _ModeCard(
                       icon: Icons.touch_app,
                       title: 'Normal Mode',
@@ -167,8 +142,7 @@ class ModeScreen extends StatelessWidget {
                         );
                       },
                     ),
-                    const SizedBox(height: 14),
-                    // Visually Impaired card
+                    const SizedBox(height: 12),
                     _ModeCard(
                       icon: Icons.accessibility_new,
                       title: 'Visually Impaired',
@@ -188,35 +162,32 @@ class ModeScreen extends StatelessWidget {
                         );
                       },
                     ),
-                    const Spacer(),
-                    // Bottom stars
+                    const SizedBox(height: 24),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: List.generate(
-                        5,
+                        3,
                         (i) => Padding(
                           padding: const EdgeInsets.symmetric(horizontal: 4),
-                          child: Icon(Icons.star, size: 12, color: VotRiteTheme.accentGold.withOpacity(0.4)),
+                          child: Icon(Icons.star, size: 10, color: VotRiteTheme.accentGold.withOpacity(0.4)),
                         ),
                       ),
                     ),
-                    const SizedBox(height: 8),
-                    // Company name
+                    const SizedBox(height: 4),
                     Text(
                       'Voterite Inc.',
                       style: TextStyle(
-                        fontSize: 12,
+                        fontSize: 11,
                         color: Colors.white.withOpacity(0.5),
                         letterSpacing: 1,
                       ),
                     ),
-                    const SizedBox(height: 10),
+                    const SizedBox(height: 8),
                     TextButton.icon(
-                      icon: const Icon(Icons.arrow_back, color: Colors.white70, size: 18),
-                      label: const Text('Back', style: TextStyle(fontSize: 15, color: Colors.white70)),
+                      icon: const Icon(Icons.arrow_back, color: Colors.white70, size: 16),
+                      label: const Text('Back', style: TextStyle(fontSize: 14, color: Colors.white70)),
                       onPressed: () => Navigator.maybePop(context),
                     ),
-                    const SizedBox(height: 4),
                   ],
                 ),
               ),
