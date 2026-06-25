@@ -45,10 +45,16 @@ class _PropositionScreenState extends State<PropositionScreen> {
   void _vote(int value) {
     final provider = context.read<VotingProvider>();
     final prop = provider.propositions[_currentPropIndex];
-    provider.savePropositionVote(prop.propositionId, value);
-    setState(() {});
-    final label = value == 1 ? prop.yesLabel : prop.noLabel;
-    TtsService().speak('Voted $label on ${prop.propTitle}.');
+    if (prop.vote == value) {
+      provider.savePropositionVote(prop.propositionId, 0);
+      setState(() {});
+      TtsService().speak('Cleared vote on ${prop.propTitle}.');
+    } else {
+      provider.savePropositionVote(prop.propositionId, value);
+      setState(() {});
+      final label = value == 1 ? prop.yesLabel : prop.noLabel;
+      TtsService().speak('Voted $label on ${prop.propTitle}.');
+    }
   }
 
   void _nextProp() {
@@ -174,7 +180,7 @@ class _PropositionScreenState extends State<PropositionScreen> {
                   ),
                 ),
               ),
-              const SizedBox(height: 24),
+              const SizedBox(height: 16),
               Row(
                 children: [
                   Expanded(
@@ -186,7 +192,7 @@ class _PropositionScreenState extends State<PropositionScreen> {
                       onTap: () => _vote(1),
                     ),
                   ),
-                  const SizedBox(width: 16),
+                  const SizedBox(width: 12),
                   Expanded(
                     child: _VoteButton(
                       label: prop.noLabel,
@@ -198,7 +204,20 @@ class _PropositionScreenState extends State<PropositionScreen> {
                   ),
                 ],
               ),
-              const SizedBox(height: 16),
+              if (prop.vote > 0)
+                Padding(
+                  padding: const EdgeInsets.only(top: 8),
+                  child: TextButton(
+                    onPressed: () {
+                      final provider = context.read<VotingProvider>();
+                      provider.savePropositionVote(prop.propositionId, 0);
+                      setState(() {});
+                      TtsService().speak('Cleared vote on ${prop.propTitle}.');
+                    },
+                    child: const Text('Clear Selection', style: TextStyle(fontSize: 13, color: Colors.grey)),
+                  ),
+                ),
+              const SizedBox(height: 10),
               Row(
                 children: [
                   if (_currentPropIndex > 0)
@@ -206,18 +225,21 @@ class _PropositionScreenState extends State<PropositionScreen> {
                       child: OutlinedButton(
                         onPressed: _prevProp,
                         style: OutlinedButton.styleFrom(
-                          padding: const EdgeInsets.symmetric(vertical: 16),
+                          padding: const EdgeInsets.symmetric(vertical: 12),
                         ),
-                        child: const Text('Previous', style: TextStyle(fontSize: 16)),
+                        child: const Text('Previous', style: TextStyle(fontSize: 14)),
                       ),
                     ),
-                  if (_currentPropIndex > 0) const SizedBox(width: 16),
+                  if (_currentPropIndex > 0) const SizedBox(width: 12),
                   Expanded(
                     child: ElevatedButton(
                       onPressed: _nextProp,
+                      style: ElevatedButton.styleFrom(
+                        padding: const EdgeInsets.symmetric(vertical: 12),
+                      ),
                       child: Text(
                         _currentPropIndex < provider.propositions.length - 1 ? 'Next' : 'Review',
-                        style: const TextStyle(fontSize: 16),
+                        style: const TextStyle(fontSize: 14),
                       ),
                     ),
                   ),

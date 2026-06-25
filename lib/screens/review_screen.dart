@@ -184,11 +184,11 @@ class _ReviewScreenState extends State<ReviewScreen> {
               child: const Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Icon(Icons.info_outline, color: VotRiteTheme.darkBlue),
-                  SizedBox(width: 8),
+                  Icon(Icons.info_outline, color: VotRiteTheme.darkBlue, size: 18),
+                  SizedBox(width: 6),
                   Text(
-                    'Review your selections before casting',
-                    style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500),
+                    'Tap any item to change your vote',
+                    style: TextStyle(fontSize: 13, fontWeight: FontWeight.w500),
                   ),
                 ],
               ),
@@ -199,7 +199,7 @@ class _ReviewScreenState extends State<ReviewScreen> {
                 children: [
                   const Text(
                     'Races',
-                    style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: VotRiteTheme.darkBlue),
+                    style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: VotRiteTheme.darkBlue),
                   ),
                   const SizedBox(height: 8),
                   ...provider.raceResults.asMap().entries.map((entry) {
@@ -215,31 +215,30 @@ class _ReviewScreenState extends State<ReviewScreen> {
                             : BorderSide.none,
                       ),
                       child: ListTile(
+                        dense: true,
                         title: Text(
                           result.raceName,
-                          style: const TextStyle(fontWeight: FontWeight.bold),
+                          style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 14),
                         ),
                         subtitle: Text(
                           result.selectedCandidates.isEmpty
                               ? 'No selection'
                               : result.selectedCandidates.map((c) => c.candidateName).join(', '),
                           style: TextStyle(
+                            fontSize: 13,
                             color: result.selectedCandidates.isEmpty
                                 ? VotRiteTheme.errorRed
                                 : VotRiteTheme.successGreen,
                           ),
                         ),
-                        trailing: IconButton(
-                          icon: const Icon(Icons.edit, color: VotRiteTheme.primaryBlue),
-                          onPressed: () {
-                            provider.goToRace(idx);
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(builder: (_) => const RaceScreen()),
-                            );
-                          },
-                        ),
-                        onTap: () => setState(() => _highlightedIndex = idx),
+                        trailing: const Icon(Icons.edit, color: VotRiteTheme.primaryBlue, size: 20),
+                        onTap: () {
+                          provider.goToRace(idx);
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(builder: (_) => const RaceScreen()),
+                          );
+                        },
                       ),
                     );
                   }),
@@ -247,7 +246,7 @@ class _ReviewScreenState extends State<ReviewScreen> {
                     const SizedBox(height: 16),
                     const Text(
                       'Propositions',
-                      style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: VotRiteTheme.darkBlue),
+                      style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: VotRiteTheme.darkBlue),
                     ),
                     const SizedBox(height: 8),
                     ...provider.propositions.asMap().entries.map((entry) {
@@ -263,9 +262,10 @@ class _ReviewScreenState extends State<ReviewScreen> {
                               : BorderSide.none,
                         ),
                         child: ListTile(
+                          dense: true,
                           title: Text(
                             prop.propTitle,
-                            style: const TextStyle(fontWeight: FontWeight.bold),
+                            style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 14),
                           ),
                           subtitle: Text(
                             prop.vote == 0
@@ -274,6 +274,7 @@ class _ReviewScreenState extends State<ReviewScreen> {
                                     ? prop.yesLabel
                                     : prop.noLabel,
                             style: TextStyle(
+                              fontSize: 13,
                               color: prop.vote == 0 ? VotRiteTheme.errorRed : VotRiteTheme.successGreen,
                               fontWeight: FontWeight.bold,
                             ),
@@ -302,11 +303,11 @@ class _ReviewScreenState extends State<ReviewScreen> {
                         : const Icon(Icons.how_to_vote),
                     label: Text(
                       provider.isSubmitting ? 'Submitting...' : 'Cast Ballot',
-                      style: const TextStyle(fontSize: 20),
+                      style: const TextStyle(fontSize: 16),
                     ),
                     style: ElevatedButton.styleFrom(
                       backgroundColor: VotRiteTheme.successGreen,
-                      padding: const EdgeInsets.symmetric(vertical: 18),
+                      padding: const EdgeInsets.symmetric(vertical: 14),
                     ),
                   ),
                   const SizedBox(height: 8),
