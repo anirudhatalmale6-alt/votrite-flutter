@@ -78,6 +78,14 @@ class VotingProvider extends ChangeNotifier {
     notifyListeners();
   }
 
+  Future<void> loadRacesAndPropositions() async {
+    if (selectedBallot == null) return;
+    await Future.wait([
+      loadRaces(),
+      loadPropositions(),
+    ]);
+  }
+
   Future<List<Party>> fetchParties() async {
     if (selectedBallot == null) return [];
     return _api.getParties(selectedBallot!.ballotId);

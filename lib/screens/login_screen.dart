@@ -84,8 +84,7 @@ class _LoginScreenState extends State<LoginScreen> {
       }
 
       provider.setPin(pin);
-      await provider.loadRaces();
-      await provider.loadPropositions();
+      await provider.loadRacesAndPropositions();
 
       if (!mounted) return;
       TtsService().speak('PIN verified. Loading your ballot.');
