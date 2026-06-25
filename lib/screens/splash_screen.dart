@@ -39,6 +39,8 @@ class _SplashScreenState extends State<SplashScreen>
     );
     _fadeController.forward();
     TtsService().init();
+    TtsService().setEnabled(false);
+    TtsService().stop();
     context.read<VotingProvider>().reset();
     Future.delayed(const Duration(seconds: 3), () {
       if (mounted) {

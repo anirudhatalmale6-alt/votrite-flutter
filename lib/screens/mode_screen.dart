@@ -136,6 +136,9 @@ class ModeScreen extends StatelessWidget {
                       subtitle: 'Use touch screen to navigate and vote',
                       accentColor: VotRiteTheme.primaryBlue,
                       onTap: () {
+                        context.read<VotingProvider>().setAccessibilityMode(false);
+                        TtsService().setEnabled(false);
+                        TtsService().stop();
                         Navigator.push(
                           context,
                           MaterialPageRoute(builder: (_) => const LoginScreen()),

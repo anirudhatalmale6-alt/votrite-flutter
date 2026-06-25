@@ -8,6 +8,7 @@ import 'help_screen.dart';
 import 'proposition_screen.dart';
 import 'race_screen.dart';
 import 'finish_screen.dart';
+import 'splash_screen.dart';
 
 class ReviewScreen extends StatefulWidget {
   const ReviewScreen({super.key});
@@ -318,9 +319,55 @@ class _ReviewScreenState extends State<ReviewScreen> {
                     ),
                   ),
                   const SizedBox(height: 8),
-                  TextButton(
-                    onPressed: () => Navigator.maybePop(context),
-                    child: const Text('Go Back', style: TextStyle(fontSize: 14)),
+                  Row(
+                    children: [
+                      Expanded(
+                        child: TextButton(
+                          onPressed: () => Navigator.maybePop(context),
+                          child: const Text('Go Back', style: TextStyle(fontSize: 14)),
+                        ),
+                      ),
+                      Expanded(
+                        child: TextButton(
+                          onPressed: () async {
+                            final confirmed = await showDialog<bool>(
+                              context: context,
+                              builder: (ctx) => AlertDialog(
+                                title: const Text('Cancel Ballot?'),
+                                content: const Text(
+                                  'Are you sure you want to cancel? All your selections will be discarded.',
+                                ),
+                                actions: [
+                                  TextButton(
+                                    onPressed: () => Navigator.pop(ctx, false),
+                                    child: const Text('No, Keep Voting'),
+                                  ),
+                                  ElevatedButton(
+                                    onPressed: () => Navigator.pop(ctx, true),
+                                    style: ElevatedButton.styleFrom(
+                                      backgroundColor: VotRiteTheme.errorRed,
+                                    ),
+                                    child: const Text('Yes, Cancel'),
+                                  ),
+                                ],
+                              ),
+                            );
+                            if (confirmed == true && mounted) {
+                              context.read<VotingProvider>().reset();
+                              Navigator.pushAndRemoveUntil(
+                                context,
+                                MaterialPageRoute(builder: (_) => const SplashScreen()),
+                                (route) => false,
+                              );
+                            }
+                          },
+                          child: const Text(
+                            'Cancel Ballot',
+                            style: TextStyle(fontSize: 14, color: VotRiteTheme.errorRed),
+                          ),
+                        ),
+                      ),
+                    ],
                   ),
                 ],
               ),
