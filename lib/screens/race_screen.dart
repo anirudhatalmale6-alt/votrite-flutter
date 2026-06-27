@@ -91,8 +91,8 @@ class _RaceScreenState extends State<RaceScreen> {
       '${race.raceName}. '
       'You have $remaining choice${remaining != 1 ? "s" : ""} remaining. '
       'Candidates: $candidateNames. '
-      '${provider.accessibilityMode ? "Swipe left for next, swipe right to go back. " : ""}'
-      'Press F to select, arrow keys to navigate, J when done. '
+      'Tap a candidate to select them, or swipe left for next race, swipe right to go back. '
+      'With keyboard: F to select, arrow keys to navigate, J when done. '
       'Press L to hear these instructions again.',
     );
   }
@@ -335,9 +335,10 @@ class _RaceScreenState extends State<RaceScreen> {
       final provider = context.read<VotingProvider>();
       final race = provider.currentRace;
       var help = 'Candidate selection screen. '
-        'Arrow keys to navigate. F to select or deselect. '
-        'K to deselect. J or Enter for next race. '
-        'S to hear selections. D to go back. Z to skip.';
+        'Tap a candidate to select or deselect them. '
+        'Swipe left for next race, swipe right to go back. '
+        'With keyboard: Arrow keys to navigate. F to select. '
+        'K to deselect. J for next race. D to go back. S to hear selections.';
       if (race != null && race.maxNumOfWriteIns > 0) {
         help += ' W to write in a candidate.';
       }

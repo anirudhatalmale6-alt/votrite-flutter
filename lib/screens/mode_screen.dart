@@ -4,7 +4,7 @@ import 'package:provider/provider.dart';
 import '../providers/voting_provider.dart';
 import '../services/tts_service.dart';
 import '../theme.dart';
-import 'login_screen.dart';
+import 'ballot_screen.dart';
 import 'vi_settings_screen.dart';
 
 class ModeScreen extends StatefulWidget {
@@ -20,9 +20,9 @@ class _ModeScreenState extends State<ModeScreen> {
     super.initState();
     Future.delayed(const Duration(milliseconds: 500), () {
       TtsService().speakAlways(
-        'How would you like to vote? '
+        'Welcome to Vote Right Mobil. How would you like to vote? '
         'Tap the top option for Normal touchscreen Mode. '
-        'Tap the bottom option for Visually Impaired mode with voice guidance. '
+        'Tap the bottom option for Visually Impaired mode with full voice guidance and swipe navigation. '
         'Or use a keyboard: press 1 for Normal, press 2 for Visually Impaired.',
       );
     });
@@ -32,7 +32,7 @@ class _ModeScreenState extends State<ModeScreen> {
     context.read<VotingProvider>().setAccessibilityMode(false);
     TtsService().setEnabled(false);
     TtsService().stop();
-    Navigator.push(context, MaterialPageRoute(builder: (_) => const LoginScreen()));
+    Navigator.push(context, MaterialPageRoute(builder: (_) => const BallotScreen()));
   }
 
   void _selectVI() {

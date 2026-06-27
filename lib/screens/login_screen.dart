@@ -26,16 +26,15 @@ class _LoginScreenState extends State<LoginScreen> {
   void initState() {
     super.initState();
     _pinController.addListener(_onPinChanged);
-    if (widget.accessibilityMode) {
-      Future.delayed(const Duration(milliseconds: 500), () {
-        TtsService().speak(
-          'Secure voter login. '
-          'Tap the PIN field in the center of the screen to open the number pad. '
-          'Type your 5 digit PIN. The app will log you in automatically after you enter your PIN. '
-          'Press L to hear these instructions again.',
-        );
-      });
-    }
+    Future.delayed(const Duration(milliseconds: 500), () {
+      TtsService().speakAlways(
+        'Secure voter login. '
+        'Tap the PIN field in the center of the screen to open the number pad. '
+        'Type your 5 digit PIN. The app will log you in automatically after you enter your PIN. '
+        'Or swipe left after entering your PIN to log in. '
+        'Press L to hear these instructions again.',
+      );
+    });
   }
 
   @override
@@ -50,12 +49,10 @@ class _LoginScreenState extends State<LoginScreen> {
     final val = _pinController.text.trim();
     if (val.length >= 5 && RegExp(r'^\d+$').hasMatch(val)) {
       _pinFocusNode.unfocus();
-      if (widget.accessibilityMode) {
-        TtsService().speak('PIN entered. Logging in now.');
-        Future.delayed(const Duration(milliseconds: 800), () {
-          if (mounted && !_loading) _login();
-        });
-      }
+      TtsService().speakAlways('PIN entered. Logging in now.');
+      Future.delayed(const Duration(milliseconds: 800), () {
+        if (mounted && !_loading) _login();
+      });
     }
   }
 
@@ -133,7 +130,13 @@ class _LoginScreenState extends State<LoginScreen> {
         }
         return KeyEventResult.ignored;
       },
-      child: Scaffold(
+      child: GestureDetector(
+        onHorizontalDragEnd: (details) {
+          if (details.primaryVelocity != null && details.primaryVelocity! < -200) {
+            if (!_loading) _login();
+          }
+        },
+        child: Scaffold(
       resizeToAvoidBottomInset: true,
       body: Container(
         decoration: const BoxDecoration(
@@ -378,6 +381,7 @@ class _LoginScreenState extends State<LoginScreen> {
             ],
           ),
         ),
+      ),
       ),
       ),
     );

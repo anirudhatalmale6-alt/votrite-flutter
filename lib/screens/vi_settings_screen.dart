@@ -4,7 +4,7 @@ import 'package:provider/provider.dart';
 import '../providers/voting_provider.dart';
 import '../services/tts_service.dart';
 import '../theme.dart';
-import 'login_screen.dart';
+import 'ballot_screen.dart';
 
 class VISettingsScreen extends StatefulWidget {
   const VISettingsScreen({super.key});
@@ -54,12 +54,10 @@ class _VISettingsScreenState extends State<VISettingsScreen> {
   void _proceed() {
     final provider = context.read<VotingProvider>();
     provider.setViZoomScale(_textScale);
-    TtsService().speak('Settings saved. Proceeding to login. Enter your PIN code.');
+    TtsService().speak('Settings saved. Next, select your ballot.');
     Navigator.push(
       context,
-      MaterialPageRoute(
-        builder: (_) => const LoginScreen(accessibilityMode: true),
-      ),
+      MaterialPageRoute(builder: (_) => const BallotScreen()),
     );
   }
 
@@ -203,7 +201,7 @@ class _VISettingsScreenState extends State<VISettingsScreen> {
                 style: ElevatedButton.styleFrom(
                   padding: const EdgeInsets.symmetric(vertical: 18),
                 ),
-                child: const Text('Continue to Login', style: TextStyle(fontSize: 18)),
+                child: const Text('Continue to Ballot', style: TextStyle(fontSize: 18)),
               ),
               const SizedBox(height: 8),
               TextButton.icon(

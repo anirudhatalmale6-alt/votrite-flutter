@@ -5,7 +5,7 @@ import '../models/ballot.dart';
 import '../providers/voting_provider.dart';
 import '../services/tts_service.dart';
 import '../theme.dart';
-import 'mode_screen.dart';
+import 'login_screen.dart';
 import 'splash_screen.dart';
 
 class BallotScreen extends StatefulWidget {
@@ -49,9 +49,15 @@ class _BallotScreenState extends State<BallotScreen> {
         _loading = false;
         _selectedIndex = -1;
       });
+      final ballotList = ballots.asMap().entries
+          .map((e) => '${e.key + 1}. ${e.value.election}')
+          .join('. ');
       TtsService().speakAlways(
-        'Welcome to Vote Right. ${ballots.length} ballot${ballots.length != 1 ? "s" : ""} available. '
-        'Tap a ballot to select it, or use arrow keys and press F to choose.',
+        'Welcome to Vote Right Mobil. '
+        '${ballots.length} ballot${ballots.length != 1 ? "s" : ""} available. '
+        '$ballotList. '
+        'Tap a ballot to select it, or swipe up and down to scroll. '
+        'With a keyboard, use arrow keys to navigate and press F to choose.',
       );
     } catch (e) {
       setState(() {
@@ -64,12 +70,12 @@ class _BallotScreenState extends State<BallotScreen> {
   void _selectBallot(Ballot ballot) {
     final provider = context.read<VotingProvider>();
     provider.selectBallot(ballot);
-    if (TtsService().enabled) {
-      TtsService().speak('Selected: ${ballot.election}. Proceeding to mode selection.');
-    }
+    TtsService().speakAlways('Selected: ${ballot.election}. Proceeding to login.');
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (mounted) {
-        Navigator.push(context, MaterialPageRoute(builder: (_) => const ModeScreen()));
+        Navigator.push(context, MaterialPageRoute(
+          builder: (_) => LoginScreen(accessibilityMode: provider.accessibilityMode),
+        ));
       }
     });
   }
