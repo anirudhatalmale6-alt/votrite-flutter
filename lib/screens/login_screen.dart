@@ -300,7 +300,7 @@ class _LoginScreenState extends State<LoginScreen> {
                             style: const TextStyle(fontSize: 18, letterSpacing: 6),
                             maxLength: 10,
                             decoration: InputDecoration(
-                              hintText: '----',
+                              hintText: '-----',
                               hintStyle: const TextStyle(letterSpacing: 8, color: Colors.grey),
                               counterText: '',
                               filled: true,
