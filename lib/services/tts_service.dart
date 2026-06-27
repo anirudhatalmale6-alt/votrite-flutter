@@ -36,6 +36,24 @@ class TtsService {
       await _tts.awaitSpeakCompletion(false);
       await _tts.setVolume(1.0);
 
+      if (Platform.isIOS) {
+        try {
+          final voices = await _tts.getVoices;
+          if (voices is List) {
+            final maleVoices = ['Aaron', 'Fred', 'Daniel', 'Tom', 'Alex'];
+            for (final preferred in maleVoices) {
+              final match = voices.cast<Map>().where((v) =>
+                  v['name']?.toString().contains(preferred) == true &&
+                  v['locale']?.toString().startsWith('en') == true).toList();
+              if (match.isNotEmpty) {
+                await _tts.setVoice({'name': match[0]['name'], 'locale': match[0]['locale']});
+                break;
+              }
+            }
+          }
+        } catch (_) {}
+      }
+
       _tts.setCompletionHandler(() => _speaking = false);
       _tts.setCancelHandler(() => _speaking = false);
       _tts.setErrorHandler((_) => _speaking = false);
