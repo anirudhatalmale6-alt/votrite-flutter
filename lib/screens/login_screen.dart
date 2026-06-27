@@ -44,9 +44,10 @@ class _LoginScreenState extends State<LoginScreen> {
     if (val.length >= 4 && RegExp(r'^\d+$').hasMatch(val)) {
       _pinFocusNode.unfocus();
       if (widget.accessibilityMode) {
-        TtsService().speak(
-          'PIN entered. Tap the Login button at the bottom of the screen, or press Enter on your keyboard.',
-        );
+        TtsService().speak('PIN entered. Logging in now.');
+        Future.delayed(const Duration(milliseconds: 800), () {
+          if (mounted && !_loading) _login();
+        });
       }
     }
   }
