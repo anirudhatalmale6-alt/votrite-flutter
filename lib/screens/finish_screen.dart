@@ -127,6 +127,8 @@ class _FinishScreenState extends State<FinishScreen> with SingleTickerProviderSt
                   ),
                   child: const Text('Done', style: TextStyle(fontSize: 14)),
                 ),
+                const SizedBox(height: 24),
+                VotRiteTheme.footer(color: Colors.white),
               ],
             ),
           ),

@@ -457,6 +457,7 @@ class _ReviewScreenState extends State<ReviewScreen> {
                 ],
               ),
             ),
+            VotRiteTheme.footer(),
           ],
         ),
         ),

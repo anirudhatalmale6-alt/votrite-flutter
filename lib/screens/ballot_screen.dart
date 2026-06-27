@@ -49,10 +49,10 @@ class _BallotScreenState extends State<BallotScreen> {
         _loading = false;
         _selectedIndex = -1;
       });
-      final tts = TtsService();
-      if (tts.enabled) {
-        tts.speak('${ballots.length} ballots found. Press F to select, use arrow keys to navigate.');
-      }
+      TtsService().speakAlways(
+        'Welcome to Vote Right. ${ballots.length} ballot${ballots.length != 1 ? "s" : ""} available. '
+        'Tap a ballot to select it, or use arrow keys and press F to choose.',
+      );
     } catch (e) {
       setState(() {
         _loading = false;
@@ -280,6 +280,7 @@ class _BallotScreenState extends State<BallotScreen> {
                               },
                             ),
             ),
+            VotRiteTheme.footer(),
           ],
         ),
       ),

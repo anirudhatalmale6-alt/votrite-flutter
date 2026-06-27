@@ -584,7 +584,7 @@ class _RaceScreenState extends State<RaceScreen> {
                       ),
                     ),
                   Padding(
-                    padding: const EdgeInsets.all(16),
+                    padding: const EdgeInsets.fromLTRB(16, 16, 16, 4),
                     child: Row(
                       children: [
                         Expanded(
@@ -609,6 +609,7 @@ class _RaceScreenState extends State<RaceScreen> {
                       ],
                     ),
                   ),
+                  VotRiteTheme.footer(),
                 ],
               ),
         ),

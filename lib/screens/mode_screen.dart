@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import '../providers/voting_provider.dart';
 import '../services/tts_service.dart';
@@ -6,12 +7,68 @@ import '../theme.dart';
 import 'login_screen.dart';
 import 'vi_settings_screen.dart';
 
-class ModeScreen extends StatelessWidget {
+class ModeScreen extends StatefulWidget {
   const ModeScreen({super.key});
 
   @override
+  State<ModeScreen> createState() => _ModeScreenState();
+}
+
+class _ModeScreenState extends State<ModeScreen> {
+  @override
+  void initState() {
+    super.initState();
+    Future.delayed(const Duration(milliseconds: 500), () {
+      TtsService().speakAlways(
+        'How would you like to vote? '
+        'Tap the top option for Normal touchscreen Mode. '
+        'Tap the bottom option for Visually Impaired mode with voice guidance. '
+        'Or use a keyboard: press 1 for Normal, press 2 for Visually Impaired.',
+      );
+    });
+  }
+
+  void _selectNormal() {
+    context.read<VotingProvider>().setAccessibilityMode(false);
+    TtsService().setEnabled(false);
+    TtsService().stop();
+    Navigator.push(context, MaterialPageRoute(builder: (_) => const LoginScreen()));
+  }
+
+  void _selectVI() {
+    context.read<VotingProvider>().setAccessibilityMode(true);
+    TtsService().setEnabled(true);
+    TtsService().speak(
+      'Visually impaired mode selected. Voice guidance enabled. '
+      'Next, customize your voice speed and text size.',
+    );
+    Navigator.push(context, MaterialPageRoute(builder: (_) => const VISettingsScreen()));
+  }
+
+  @override
   Widget build(BuildContext context) {
-    return Scaffold(
+    return Focus(
+      autofocus: true,
+      onKeyEvent: (node, event) {
+        if (event is! KeyDownEvent) return KeyEventResult.ignored;
+        if (event.logicalKey == LogicalKeyboardKey.digit1 || event.logicalKey == LogicalKeyboardKey.numpad1) {
+          _selectNormal();
+          return KeyEventResult.handled;
+        }
+        if (event.logicalKey == LogicalKeyboardKey.digit2 || event.logicalKey == LogicalKeyboardKey.numpad2) {
+          _selectVI();
+          return KeyEventResult.handled;
+        }
+        if (event.logicalKey == LogicalKeyboardKey.keyL) {
+          TtsService().speakAlways(
+            'Mode selection. Press 1 or tap top button for Normal Mode. '
+            'Press 2 or tap bottom button for Visually Impaired mode.',
+          );
+          return KeyEventResult.handled;
+        }
+        return KeyEventResult.ignored;
+      },
+      child: Scaffold(
       body: Container(
         decoration: const BoxDecoration(
           gradient: LinearGradient(
@@ -136,15 +193,7 @@ class ModeScreen extends StatelessWidget {
                       title: 'Normal Mode',
                       subtitle: 'Use touch screen to navigate and vote',
                       accentColor: VotRiteTheme.primaryBlue,
-                      onTap: () {
-                        context.read<VotingProvider>().setAccessibilityMode(false);
-                        TtsService().setEnabled(false);
-                        TtsService().stop();
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(builder: (_) => const LoginScreen()),
-                        );
-                      },
+                      onTap: _selectNormal,
                     ),
                     const SizedBox(height: 10),
                     _ModeCard(
@@ -152,20 +201,7 @@ class ModeScreen extends StatelessWidget {
                       title: 'Visually Impaired',
                       subtitle: 'Voice guidance with keyboard or touch',
                       accentColor: const Color(0xFFB31942),
-                      onTap: () {
-                        context.read<VotingProvider>().setAccessibilityMode(true);
-                        TtsService().setEnabled(true);
-                        TtsService().speak(
-                          'Visually impaired mode selected. Voice guidance enabled. '
-                          'Next, customize your voice speed and text size.',
-                        );
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (_) => const VISettingsScreen(),
-                          ),
-                        );
-                      },
+                      onTap: _selectVI,
                     ),
                     const SizedBox(height: 12),
                     Row(
@@ -199,6 +235,7 @@ class ModeScreen extends StatelessWidget {
             ),
           ],
         ),
+      ),
       ),
     );
   }

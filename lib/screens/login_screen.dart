@@ -27,7 +27,14 @@ class _LoginScreenState extends State<LoginScreen> {
     super.initState();
     _pinController.addListener(_onPinChanged);
     if (widget.accessibilityMode) {
-      TtsService().speak('Enter your PIN code to begin voting. Type your PIN and press Enter to login.');
+      Future.delayed(const Duration(milliseconds: 500), () {
+        TtsService().speak(
+          'Secure voter login. '
+          'Tap the PIN field in the center of the screen to open the number pad. '
+          'Type your PIN digits. The app will log you in automatically after you enter your PIN. '
+          'Press L to hear these instructions again.',
+        );
+      });
     }
   }
 
@@ -109,7 +116,25 @@ class _LoginScreenState extends State<LoginScreen> {
   Widget build(BuildContext context) {
     final ballotName = context.read<VotingProvider>().selectedBallot?.election ?? 'Ballot';
 
-    return Scaffold(
+    return Focus(
+      onKeyEvent: (node, event) {
+        if (event is! KeyDownEvent) return KeyEventResult.ignored;
+        if (event.logicalKey == LogicalKeyboardKey.keyL) {
+          TtsService().speak(
+            'Login screen. Tap the PIN field to open the number pad. '
+            'Type your PIN digits. The app logs in automatically. '
+            'Press Enter to login manually.',
+          );
+          return KeyEventResult.handled;
+        }
+        if (event.logicalKey == LogicalKeyboardKey.enter) {
+          if (!_loading) _login();
+          return KeyEventResult.handled;
+        }
+        return KeyEventResult.ignored;
+      },
+      child: Scaffold(
+      resizeToAvoidBottomInset: true,
       body: Container(
         decoration: const BoxDecoration(
           gradient: LinearGradient(
@@ -342,7 +367,9 @@ class _LoginScreenState extends State<LoginScreen> {
                     label: const Text('Back', style: TextStyle(fontSize: 13)),
                     onPressed: () => Navigator.maybePop(context),
                   ),
-                        const SizedBox(height: 16),
+                        const SizedBox(height: 8),
+                        VotRiteTheme.footer(color: Colors.grey),
+                        const SizedBox(height: 8),
                       ],
                     ),
                   ),
@@ -351,6 +378,7 @@ class _LoginScreenState extends State<LoginScreen> {
             ],
           ),
         ),
+      ),
       ),
     );
   }

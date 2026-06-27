@@ -53,6 +53,22 @@ class VotRiteTheme {
     );
   }
 
+  static Widget footer({Color color = Colors.grey}) {
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 4, top: 4),
+      child: Text(
+        'VotRite',
+        style: TextStyle(
+          fontSize: 10,
+          color: color.withValues(alpha: 0.5),
+          letterSpacing: 2,
+          fontWeight: FontWeight.w500,
+        ),
+        textAlign: TextAlign.center,
+      ),
+    );
+  }
+
   static ThemeData get accessibilityTheme {
     return ThemeData(
       primaryColor: a11yButton,

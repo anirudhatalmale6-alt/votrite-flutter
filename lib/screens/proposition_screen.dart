@@ -266,6 +266,7 @@ class _PropositionScreenState extends State<PropositionScreen> {
                   ),
                 ],
               ),
+              VotRiteTheme.footer(),
             ],
           ),
         ),
