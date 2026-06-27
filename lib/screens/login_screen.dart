@@ -31,7 +31,7 @@ class _LoginScreenState extends State<LoginScreen> {
         TtsService().speak(
           'Secure voter login. '
           'Tap the PIN field in the center of the screen to open the number pad. '
-          'Type your PIN digits. The app will log you in automatically after you enter your PIN. '
+          'Type your 5 digit PIN. The app will log you in automatically after you enter your PIN. '
           'Press L to hear these instructions again.',
         );
       });
@@ -48,7 +48,7 @@ class _LoginScreenState extends State<LoginScreen> {
 
   void _onPinChanged() {
     final val = _pinController.text.trim();
-    if (val.length >= 4 && RegExp(r'^\d+$').hasMatch(val)) {
+    if (val.length >= 5 && RegExp(r'^\d+$').hasMatch(val)) {
       _pinFocusNode.unfocus();
       if (widget.accessibilityMode) {
         TtsService().speak('PIN entered. Logging in now.');
