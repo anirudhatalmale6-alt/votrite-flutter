@@ -37,6 +37,7 @@ class VotingProvider extends ChangeNotifier {
   bool isReviewMode = false;
   bool isSubmitting = false;
   bool accessibilityMode = false;
+  double viZoomScale = 1.3;
 
   Race? get currentRace =>
       currentRaceIndex < races.length ? races[currentRaceIndex] : null;
@@ -54,6 +55,15 @@ class VotingProvider extends ChangeNotifier {
   void setAccessibilityMode(bool value) {
     accessibilityMode = value;
     notifyListeners();
+  }
+
+  void setViZoomScale(double scale) {
+    viZoomScale = scale;
+    notifyListeners();
+  }
+
+  double scaledFont(double base) {
+    return accessibilityMode ? base * viZoomScale : base;
   }
 
   Future<List<Ballot>> fetchBallots({String search = ''}) async {
@@ -198,6 +208,7 @@ class VotingProvider extends ChangeNotifier {
     massPropositions = [];
     isReviewMode = false;
     isSubmitting = false;
+    viZoomScale = 1.3;
     notifyListeners();
   }
 }

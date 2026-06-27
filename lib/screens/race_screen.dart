@@ -84,11 +84,16 @@ class _RaceScreenState extends State<RaceScreen> {
   void _announceRace(Race race) {
     final tts = TtsService();
     final selected = _candidates.where((c) => c.isSelected).length;
+    final remaining = race.maxNumOfVotes - selected;
+    final candidateNames = _candidates.map((c) => c.candidateName).join(', ');
+    final provider = context.read<VotingProvider>();
     tts.speak(
       '${race.raceName}. '
-      'Select ${race.minNumOfVotes} to ${race.maxNumOfVotes} candidates. '
-      '$selected selected so far. '
-      'Press F to select or deselect, arrow keys to navigate, J when done.',
+      'You have $remaining choice${remaining != 1 ? "s" : ""} remaining. '
+      'Candidates: $candidateNames. '
+      '${provider.accessibilityMode ? "Swipe left for next, swipe right to go back. " : ""}'
+      'Press F to select, arrow keys to navigate, J when done. '
+      'Press L to hear these instructions again.',
     );
   }
 
@@ -182,6 +187,9 @@ class _RaceScreenState extends State<RaceScreen> {
         content: TextField(
           controller: controller,
           autofocus: true,
+          autocorrect: false,
+          enableSuggestions: false,
+          textCapitalization: TextCapitalization.words,
           decoration: const InputDecoration(
             hintText: 'Enter candidate name',
             border: OutlineInputBorder(),
@@ -348,7 +356,17 @@ class _RaceScreenState extends State<RaceScreen> {
       focusNode: _focusNode,
       autofocus: true,
       onKeyEvent: _handleKey,
-      child: Scaffold(
+      child: GestureDetector(
+        onHorizontalDragEnd: (details) {
+          if (details.primaryVelocity != null) {
+            if (details.primaryVelocity! < -200) {
+              _saveAndProceed();
+            } else if (details.primaryVelocity! > 200) {
+              Navigator.maybePop(context);
+            }
+          }
+        },
+        child: Scaffold(
         appBar: AppBar(
           title: Row(
             mainAxisSize: MainAxisSize.min,
@@ -406,29 +424,42 @@ class _RaceScreenState extends State<RaceScreen> {
                     label: 'Race ${provider.currentRaceIndex + 1} of ${provider.races.length}. '
                         '${race?.raceName ?? ""}. '
                         'Select ${race?.minNumOfVotes ?? 0} to ${race?.maxNumOfVotes ?? 1} candidates.',
-                    child: Container(
-                      width: double.infinity,
-                      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
-                      color: VotRiteTheme.primaryBlue.withValues(alpha: 0.05),
-                      child: Column(
-                        children: [
-                          Text(
-                            'Race ${provider.currentRaceIndex + 1} of ${provider.races.length}',
-                            style: const TextStyle(fontSize: 12, color: Colors.grey),
+                    child: Builder(
+                      builder: (context) {
+                        final selectedCount = _candidates.where((c) => c.isSelected).length;
+                        final maxVotes = race?.maxNumOfVotes ?? 1;
+                        final remaining = maxVotes - selectedCount;
+                        return Container(
+                          width: double.infinity,
+                          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+                          color: VotRiteTheme.primaryBlue.withValues(alpha: 0.05),
+                          child: Column(
+                            children: [
+                              Text(
+                                'Race ${provider.currentRaceIndex + 1} of ${provider.races.length}',
+                                style: TextStyle(fontSize: provider.scaledFont(12), color: Colors.grey),
+                              ),
+                              const SizedBox(height: 2),
+                              Text(
+                                race?.raceName ?? '',
+                                style: TextStyle(fontSize: provider.scaledFont(14), fontWeight: FontWeight.bold),
+                                textAlign: TextAlign.center,
+                              ),
+                              const SizedBox(height: 2),
+                              Text(
+                                remaining > 0
+                                    ? 'You have $remaining choice${remaining != 1 ? "s" : ""} remaining'
+                                    : 'All choices made',
+                                style: TextStyle(
+                                  fontSize: provider.scaledFont(12),
+                                  color: remaining > 0 ? VotRiteTheme.primaryBlue : VotRiteTheme.successGreen,
+                                  fontWeight: FontWeight.w600,
+                                ),
+                              ),
+                            ],
                           ),
-                          const SizedBox(height: 2),
-                          Text(
-                            race?.raceName ?? '',
-                            style: const TextStyle(fontSize: 14, fontWeight: FontWeight.bold),
-                            textAlign: TextAlign.center,
-                          ),
-                          const SizedBox(height: 2),
-                          Text(
-                            'Select ${race?.minNumOfVotes ?? 0} to ${race?.maxNumOfVotes ?? 1} candidate(s)',
-                            style: const TextStyle(fontSize: 12, color: VotRiteTheme.primaryBlue),
-                          ),
-                        ],
-                      ),
+                        );
+                      },
                     ),
                   ),
                   if (_candidates.length > 4)
@@ -514,7 +545,7 @@ class _RaceScreenState extends State<RaceScreen> {
                                     ),
                                     title: Text(
                                       cand.candidateName,
-                                      style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 13),
+                                      style: TextStyle(fontWeight: FontWeight.bold, fontSize: provider.scaledFont(13)),
                                     ),
                                     subtitle: cand.partyName.isNotEmpty
                                         ? Text(cand.partyName)
@@ -580,6 +611,7 @@ class _RaceScreenState extends State<RaceScreen> {
                   ),
                 ],
               ),
+        ),
       ),
     );
   }

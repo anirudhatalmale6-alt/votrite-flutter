@@ -4,6 +4,7 @@ import '../providers/voting_provider.dart';
 import '../services/tts_service.dart';
 import '../theme.dart';
 import 'login_screen.dart';
+import 'vi_settings_screen.dart';
 
 class ModeScreen extends StatelessWidget {
   const ModeScreen({super.key});
@@ -149,18 +150,19 @@ class ModeScreen extends StatelessWidget {
                     _ModeCard(
                       icon: Icons.accessibility_new,
                       title: 'Visually Impaired',
-                      subtitle: 'Voice guidance with keyboard navigation',
+                      subtitle: 'Voice guidance with keyboard or touch',
                       accentColor: const Color(0xFFB31942),
                       onTap: () {
                         context.read<VotingProvider>().setAccessibilityMode(true);
                         TtsService().setEnabled(true);
                         TtsService().speak(
-                          'Visually impaired mode activated. Voice guidance enabled.',
+                          'Visually impaired mode selected. Voice guidance enabled. '
+                          'Next, customize your voice speed and text size.',
                         );
                         Navigator.push(
                           context,
                           MaterialPageRoute(
-                            builder: (_) => const LoginScreen(accessibilityMode: true),
+                            builder: (_) => const VISettingsScreen(),
                           ),
                         );
                       },

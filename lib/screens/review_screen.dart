@@ -35,9 +35,21 @@ class _ReviewScreenState extends State<ReviewScreen> {
 
   void _announceReview() {
     final provider = context.read<VotingProvider>();
+    final summary = <String>[];
+    for (final result in provider.raceResults) {
+      final names = result.selectedCandidates.map((c) => c.candidateName).join(', ');
+      summary.add('${result.raceName}: ${names.isEmpty ? "No selection" : names}');
+    }
+    for (final prop in provider.propositions) {
+      final vote = prop.vote == 1 ? prop.yesLabel : prop.vote == 2 ? prop.noLabel : 'No vote';
+      summary.add('${prop.propTitle}: $vote');
+    }
     TtsService().speak(
-      'Review your votes. ${provider.raceResults.length} races. '
-      'Arrow keys to navigate, S to hear details, F to change a vote, J to cast ballot.',
+      'Review your votes. ${provider.raceResults.length} races'
+      '${provider.propositions.isNotEmpty ? " and ${provider.propositions.length} propositions" : ""}. '
+      '${summary.join(". ")}. '
+      'Tap any item to change your vote. Swipe left or press J to cast ballot. '
+      'Press S to hear this summary again. Press L for help.',
     );
   }
 
@@ -163,7 +175,13 @@ class _ReviewScreenState extends State<ReviewScreen> {
       focusNode: _focusNode,
       autofocus: true,
       onKeyEvent: _handleKey,
-      child: Scaffold(
+      child: GestureDetector(
+        onHorizontalDragEnd: (details) {
+          if (details.primaryVelocity != null && details.primaryVelocity! < -200) {
+            _castBallot();
+          }
+        },
+        child: Scaffold(
         appBar: AppBar(
           title: Row(
             mainAxisSize: MainAxisSize.min,
@@ -223,24 +241,8 @@ class _ReviewScreenState extends State<ReviewScreen> {
                             ? const BorderSide(color: VotRiteTheme.accentGold, width: 2)
                             : BorderSide.none,
                       ),
-                      child: ListTile(
-                        dense: true,
-                        title: Text(
-                          result.raceName,
-                          style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 13),
-                        ),
-                        subtitle: Text(
-                          result.selectedCandidates.isEmpty
-                              ? 'No selection'
-                              : result.selectedCandidates.map((c) => c.candidateName).join(', '),
-                          style: TextStyle(
-                            fontSize: 12,
-                            color: result.selectedCandidates.isEmpty
-                                ? VotRiteTheme.errorRed
-                                : VotRiteTheme.successGreen,
-                          ),
-                        ),
-                        trailing: const Icon(Icons.edit, color: VotRiteTheme.primaryBlue, size: 20),
+                      child: InkWell(
+                        borderRadius: BorderRadius.circular(8),
                         onTap: () {
                           provider.goToRace(idx);
                           Navigator.push(
@@ -248,6 +250,52 @@ class _ReviewScreenState extends State<ReviewScreen> {
                             MaterialPageRoute(builder: (_) => const RaceScreen()),
                           );
                         },
+                        child: Padding(
+                          padding: const EdgeInsets.all(12),
+                          child: Row(
+                            children: [
+                              Expanded(
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text(
+                                      result.raceName,
+                                      style: TextStyle(fontWeight: FontWeight.bold, fontSize: provider.scaledFont(13)),
+                                    ),
+                                    const SizedBox(height: 4),
+                                    Text(
+                                      result.selectedCandidates.isEmpty
+                                          ? 'No selection'
+                                          : result.selectedCandidates.map((c) => c.candidateName).join(', '),
+                                      style: TextStyle(
+                                        fontSize: provider.scaledFont(12),
+                                        color: result.selectedCandidates.isEmpty
+                                            ? VotRiteTheme.errorRed
+                                            : VotRiteTheme.successGreen,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                              const SizedBox(width: 8),
+                              Container(
+                                padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                                decoration: BoxDecoration(
+                                  color: VotRiteTheme.primaryBlue,
+                                  borderRadius: BorderRadius.circular(6),
+                                ),
+                                child: const Row(
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: [
+                                    Icon(Icons.edit, color: Colors.white, size: 16),
+                                    SizedBox(width: 4),
+                                    Text('Edit', style: TextStyle(color: Colors.white, fontSize: 12, fontWeight: FontWeight.bold)),
+                                  ],
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
                       ),
                     );
                   }),
@@ -270,31 +318,61 @@ class _ReviewScreenState extends State<ReviewScreen> {
                               ? const BorderSide(color: VotRiteTheme.accentGold, width: 2)
                               : BorderSide.none,
                         ),
-                        child: ListTile(
-                          dense: true,
-                          title: Text(
-                            prop.propTitle,
-                            style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 13),
-                          ),
-                          subtitle: Text(
-                            prop.vote == 0
-                                ? 'No vote'
-                                : prop.vote == 1
-                                    ? prop.yesLabel
-                                    : prop.noLabel,
-                            style: TextStyle(
-                              fontSize: 12,
-                              color: prop.vote == 0 ? VotRiteTheme.errorRed : VotRiteTheme.successGreen,
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
-                          trailing: const Icon(Icons.edit, color: VotRiteTheme.primaryBlue, size: 20),
+                        child: InkWell(
+                          borderRadius: BorderRadius.circular(8),
                           onTap: () {
                             Navigator.push(
                               context,
                               MaterialPageRoute(builder: (_) => const PropositionScreen()),
                             );
                           },
+                          child: Padding(
+                            padding: const EdgeInsets.all(12),
+                            child: Row(
+                              children: [
+                                Expanded(
+                                  child: Column(
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    children: [
+                                      Text(
+                                        prop.propTitle,
+                                        style: TextStyle(fontWeight: FontWeight.bold, fontSize: provider.scaledFont(13)),
+                                      ),
+                                      const SizedBox(height: 4),
+                                      Text(
+                                        prop.vote == 0
+                                            ? 'No vote'
+                                            : prop.vote == 1
+                                                ? prop.yesLabel
+                                                : prop.noLabel,
+                                        style: TextStyle(
+                                          fontSize: provider.scaledFont(12),
+                                          color: prop.vote == 0 ? VotRiteTheme.errorRed : VotRiteTheme.successGreen,
+                                          fontWeight: FontWeight.bold,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                                const SizedBox(width: 8),
+                                Container(
+                                  padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                                  decoration: BoxDecoration(
+                                    color: VotRiteTheme.primaryBlue,
+                                    borderRadius: BorderRadius.circular(6),
+                                  ),
+                                  child: const Row(
+                                    mainAxisSize: MainAxisSize.min,
+                                    children: [
+                                      Icon(Icons.edit, color: Colors.white, size: 16),
+                                      SizedBox(width: 4),
+                                      Text('Edit', style: TextStyle(color: Colors.white, fontSize: 12, fontWeight: FontWeight.bold)),
+                                    ],
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
                         ),
                       );
                     }),
@@ -380,6 +458,7 @@ class _ReviewScreenState extends State<ReviewScreen> {
               ),
             ),
           ],
+        ),
         ),
       ),
     );

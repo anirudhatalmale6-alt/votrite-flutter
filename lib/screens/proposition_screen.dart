@@ -34,11 +34,15 @@ class _PropositionScreenState extends State<PropositionScreen> {
     final provider = context.read<VotingProvider>();
     if (provider.propositions.isEmpty) return;
     final prop = provider.propositions[_currentPropIndex];
+    final currentVote = prop.vote == 1 ? 'Currently voted ${prop.yesLabel}' : prop.vote == 2 ? 'Currently voted ${prop.noLabel}' : 'No vote yet';
     final tts = TtsService();
     tts.speak(
       'Proposition ${_currentPropIndex + 1} of ${provider.propositions.length}. '
       '${prop.propTitle}. ${prop.propText}. '
-      'Press F for ${prop.yesLabel}, K for ${prop.noLabel}, J for next.',
+      '$currentVote. '
+      'Tap ${prop.yesLabel} or ${prop.noLabel} on screen, or press F for ${prop.yesLabel}, K for ${prop.noLabel}. '
+      'Swipe left or press J for next. Swipe right or press D for previous. '
+      'Press L to hear these instructions again.',
     );
   }
 
@@ -126,7 +130,17 @@ class _PropositionScreenState extends State<PropositionScreen> {
       focusNode: _focusNode,
       autofocus: true,
       onKeyEvent: _handleKey,
-      child: Scaffold(
+      child: GestureDetector(
+        onHorizontalDragEnd: (details) {
+          if (details.primaryVelocity != null) {
+            if (details.primaryVelocity! < -200) {
+              _nextProp();
+            } else if (details.primaryVelocity! > 200) {
+              _prevProp();
+            }
+          }
+        },
+        child: Scaffold(
         appBar: AppBar(
           title: Row(
             mainAxisSize: MainAxisSize.min,
@@ -254,6 +268,7 @@ class _PropositionScreenState extends State<PropositionScreen> {
               ),
             ],
           ),
+        ),
         ),
       ),
     );

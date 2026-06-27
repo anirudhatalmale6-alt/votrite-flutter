@@ -13,8 +13,10 @@ class TtsService {
   bool _initInProgress = false;
   bool _enabled = false;
   bool _speaking = false;
+  double _currentRate = 0.45;
 
   bool get enabled => _enabled;
+  double get currentRate => _currentRate;
 
   Future<void> init() async {
     if (_initialized || _initInProgress) return;
@@ -40,6 +42,7 @@ class TtsService {
 
       final prefs = await SharedPreferences.getInstance();
       final rate = prefs.getDouble('tts_rate') ?? 0.45;
+      _currentRate = rate;
       await _tts.setSpeechRate(rate);
       _enabled = prefs.getBool('accessibility_mode') ?? false;
       _initialized = true;
@@ -60,6 +63,7 @@ class TtsService {
   }
 
   Future<void> setSpeechRate(double rate) async {
+    _currentRate = rate;
     await _ensureInit();
     try {
       await _tts.setSpeechRate(rate);

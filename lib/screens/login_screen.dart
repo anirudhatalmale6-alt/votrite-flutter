@@ -43,7 +43,11 @@ class _LoginScreenState extends State<LoginScreen> {
     final val = _pinController.text.trim();
     if (val.length >= 4 && RegExp(r'^\d+$').hasMatch(val)) {
       _pinFocusNode.unfocus();
-      TtsService().speak('PIN entered. Press Enter to login.');
+      if (widget.accessibilityMode) {
+        TtsService().speak(
+          'PIN entered. Tap the Login button at the bottom of the screen, or press Enter on your keyboard.',
+        );
+      }
     }
   }
 
@@ -264,6 +268,7 @@ class _LoginScreenState extends State<LoginScreen> {
                             autofocus: false,
                             obscureText: _obscurePin,
                             keyboardType: TextInputType.number,
+                            textInputAction: TextInputAction.done,
                             inputFormatters: [FilteringTextInputFormatter.digitsOnly],
                             textAlign: TextAlign.center,
                             style: const TextStyle(fontSize: 18, letterSpacing: 6),
@@ -316,6 +321,7 @@ class _LoginScreenState extends State<LoginScreen> {
                           child: ElevatedButton(
                             onPressed: _loading ? null : _login,
                             style: ElevatedButton.styleFrom(
+                              padding: const EdgeInsets.symmetric(vertical: 14),
                               shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
                             ),
                             child: _loading
@@ -323,7 +329,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                     height: 20, width: 20,
                                     child: CircularProgressIndicator(color: Colors.white, strokeWidth: 2),
                                   )
-                                : const Text('Login', style: TextStyle(fontSize: 14)),
+                                : const Text('Login', style: TextStyle(fontSize: 16)),
                           ),
                         ),
                       ],
