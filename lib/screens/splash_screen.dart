@@ -42,7 +42,7 @@ class _SplashScreenState extends State<SplashScreen>
     TtsService().setEnabled(false);
     TtsService().stop();
     context.read<VotingProvider>().reset();
-    Future.delayed(const Duration(seconds: 3), () {
+    Future.delayed(const Duration(milliseconds: 1500), () {
       if (mounted) {
         Navigator.pushReplacement(
           context,

@@ -85,12 +85,14 @@ class _RaceScreenState extends State<RaceScreen> {
     final tts = TtsService();
     final selected = _candidates.where((c) => c.isSelected).length;
     final remaining = race.maxNumOfVotes - selected;
-    final candidateNames = _candidates.map((c) => c.candidateName).join(', ');
-    final provider = context.read<VotingProvider>();
+    final numberedCandidates = _candidates.asMap().entries
+        .map((e) => '${e.key + 1}. ${e.value.candidateName}')
+        .join('. ');
     tts.speak(
       '${race.raceName}. '
+      'Vote for no more than ${race.maxNumOfVotes}. '
+      'Candidates listed: $numberedCandidates. '
       'You have $remaining choice${remaining != 1 ? "s" : ""} remaining. '
-      'Candidates: $candidateNames. '
       'Tap a candidate to select them, or swipe left for next race, swipe right to go back. '
       'With keyboard: F to select, arrow keys to navigate, J when done. '
       'Press L to hear these instructions again.',
