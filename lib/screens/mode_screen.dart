@@ -42,7 +42,11 @@ class _ModeScreenState extends State<ModeScreen> {
       'Visually impaired mode selected. Voice guidance enabled. '
       'Next, customize your voice speed and text size.',
     );
-    Navigator.push(context, MaterialPageRoute(builder: (_) => const VISettingsScreen()));
+    Future.delayed(const Duration(seconds: 3), () {
+      if (mounted) {
+        Navigator.push(context, MaterialPageRoute(builder: (_) => const VISettingsScreen()));
+      }
+    });
   }
 
   @override

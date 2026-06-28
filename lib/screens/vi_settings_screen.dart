@@ -55,10 +55,13 @@ class _VISettingsScreenState extends State<VISettingsScreen> {
     final provider = context.read<VotingProvider>();
     provider.setViZoomScale(_textScale);
     TtsService().speak('Settings saved. Next, select your ballot.');
-    Navigator.push(
-      context,
-      MaterialPageRoute(builder: (_) => const BallotScreen()),
-    );
+    Future.delayed(const Duration(seconds: 2), () {
+      if (!mounted) return;
+      Navigator.push(
+        context,
+        MaterialPageRoute(builder: (_) => const BallotScreen()),
+      );
+    });
   }
 
   KeyEventResult _handleKey(FocusNode node, KeyEvent event) {

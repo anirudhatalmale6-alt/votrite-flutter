@@ -52,7 +52,7 @@ class _BallotScreenState extends State<BallotScreen> {
       final ballotList = ballots.asMap().entries
           .map((e) => '${e.key + 1}. ${e.value.election}')
           .join('. ');
-      TtsService().speakAlways(
+      TtsService().speak(
         'Welcome to Vote Right Mobil. '
         '${ballots.length} ballot${ballots.length != 1 ? "s" : ""} available. '
         '$ballotList. '
@@ -70,7 +70,7 @@ class _BallotScreenState extends State<BallotScreen> {
   void _selectBallot(Ballot ballot) {
     final provider = context.read<VotingProvider>();
     provider.selectBallot(ballot);
-    TtsService().speakAlways('Selected: ${ballot.election}. Proceeding to login.');
+    TtsService().speak('Selected: ${ballot.election}. Proceeding to login.');
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (mounted) {
         Navigator.push(context, MaterialPageRoute(

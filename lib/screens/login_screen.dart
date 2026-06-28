@@ -27,7 +27,7 @@ class _LoginScreenState extends State<LoginScreen> {
     super.initState();
     _pinController.addListener(_onPinChanged);
     Future.delayed(const Duration(milliseconds: 500), () {
-      TtsService().speakAlways(
+      TtsService().speak(
         'Secure voter login. '
         'Tap the PIN field in the center of the screen to open the number pad. '
         'Type your 5 digit PIN. The app will log you in automatically after you enter your PIN. '
@@ -49,7 +49,7 @@ class _LoginScreenState extends State<LoginScreen> {
     final val = _pinController.text.trim();
     if (val.length >= 5 && RegExp(r'^\d+$').hasMatch(val)) {
       _pinFocusNode.unfocus();
-      TtsService().speakAlways('PIN entered. Logging in now.');
+      TtsService().speak('PIN entered. Logging in now.');
       Future.delayed(const Duration(milliseconds: 800), () {
         if (mounted && !_loading) _login();
       });
@@ -148,46 +148,43 @@ class _LoginScreenState extends State<LoginScreen> {
           ),
         ),
         child: SafeArea(
-          child: Column(
+          child: Stack(
             children: [
-              Align(
-                alignment: Alignment.topRight,
-                child: Padding(
-                  padding: const EdgeInsets.only(top: 8, right: 8),
-                  child: PopupMenuButton<String>(
-                    icon: const Icon(Icons.more_vert, color: Colors.white70),
-                    onSelected: (value) {
-                      if (value == 'start_over') {
-                        context.read<VotingProvider>().reset();
-                        Navigator.pushAndRemoveUntil(
-                          context,
-                          MaterialPageRoute(builder: (_) => const SplashScreen()),
-                          (route) => false,
-                        );
-                      }
-                    },
-                    itemBuilder: (_) => [
-                      const PopupMenuItem(
-                        value: 'start_over',
-                        child: Row(
-                          children: [
-                            Icon(Icons.refresh, size: 20, color: VotRiteTheme.primaryBlue),
-                            SizedBox(width: 8),
-                            Text('Start Over'),
-                          ],
-                        ),
+              Positioned(
+                top: 8,
+                right: 8,
+                child: PopupMenuButton<String>(
+                  icon: const Icon(Icons.more_vert, color: Colors.white70),
+                  onSelected: (value) {
+                    if (value == 'start_over') {
+                      context.read<VotingProvider>().reset();
+                      Navigator.pushAndRemoveUntil(
+                        context,
+                        MaterialPageRoute(builder: (_) => const SplashScreen()),
+                        (route) => false,
+                      );
+                    }
+                  },
+                  itemBuilder: (_) => [
+                    const PopupMenuItem(
+                      value: 'start_over',
+                      child: Row(
+                        children: [
+                          Icon(Icons.refresh, size: 20, color: VotRiteTheme.primaryBlue),
+                          SizedBox(width: 8),
+                          Text('Start Over'),
+                        ],
                       ),
-                    ],
-                  ),
+                    ),
+                  ],
                 ),
               ),
-              Expanded(
-                child: Center(
-                  child: SingleChildScrollView(
-                    padding: const EdgeInsets.symmetric(horizontal: 28),
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
+              Center(
+                child: SingleChildScrollView(
+                  padding: const EdgeInsets.symmetric(horizontal: 28),
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
                         // Stars row
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
@@ -377,11 +374,10 @@ class _LoginScreenState extends State<LoginScreen> {
                     ),
                   ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
         ),
-      ),
       ),
       ),
     );
