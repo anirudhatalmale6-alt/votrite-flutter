@@ -71,8 +71,9 @@ class _BallotScreenState extends State<BallotScreen> {
     final provider = context.read<VotingProvider>();
     provider.selectBallot(ballot);
     TtsService().speak('Selected: ${ballot.election}. Proceeding to login.');
-    WidgetsBinding.instance.addPostFrameCallback((_) {
+    Future.delayed(const Duration(seconds: 2), () {
       if (mounted) {
+        TtsService().stop();
         Navigator.push(context, MaterialPageRoute(
           builder: (_) => LoginScreen(accessibilityMode: provider.accessibilityMode),
         ));

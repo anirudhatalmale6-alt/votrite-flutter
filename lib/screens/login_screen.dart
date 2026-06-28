@@ -97,7 +97,7 @@ class _LoginScreenState extends State<LoginScreen> {
       await provider.loadRacesAndPropositions();
 
       if (!mounted) return;
-      TtsService().speak('PIN verified. Loading your ballot.');
+      TtsService().stop();
       Navigator.push(context, MaterialPageRoute(builder: (_) => const RaceScreen()));
     } catch (e) {
       if (!mounted) return;
