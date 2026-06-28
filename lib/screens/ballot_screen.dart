@@ -56,8 +56,7 @@ class _BallotScreenState extends State<BallotScreen> {
         'Welcome to Vote Right Mobil. '
         '${ballots.length} ballot${ballots.length != 1 ? "s" : ""} available. '
         '$ballotList. '
-        'Tap a ballot to select it, or swipe up and down to scroll. '
-        'With a keyboard, use arrow keys to navigate and press F to choose.',
+        'Tap a ballot to select it, or swipe up and down to scroll.',
       );
     } catch (e) {
       setState(() {
@@ -133,8 +132,7 @@ class _BallotScreenState extends State<BallotScreen> {
     }
     if (key == LogicalKeyboardKey.keyL) {
       TtsService().speak(
-        'Ballot selection screen. F to select first ballot or confirm selection. '
-        'Arrow keys or K to move down. J or Enter to proceed. D to go back. S to read current selection.',
+        'Ballot selection screen. Tap a ballot to select it. Swipe up and down to scroll.',
       );
       return KeyEventResult.handled;
     }

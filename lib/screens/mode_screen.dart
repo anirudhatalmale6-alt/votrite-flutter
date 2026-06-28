@@ -22,8 +22,7 @@ class _ModeScreenState extends State<ModeScreen> {
       TtsService().speakAlways(
         'Welcome to Vote Right Mobil. How would you like to vote? '
         'Tap the top option for Normal touchscreen Mode. '
-        'Tap the bottom option for Visually Impaired mode with full voice guidance and swipe navigation. '
-        'Or use a keyboard: press 1 for Normal, press 2 for Visually Impaired.',
+        'Tap the bottom option for Visually Impaired mode with full voice guidance and swipe navigation.',
       );
     });
   }
@@ -65,8 +64,8 @@ class _ModeScreenState extends State<ModeScreen> {
         }
         if (event.logicalKey == LogicalKeyboardKey.keyL) {
           TtsService().speakAlways(
-            'Mode selection. Press 1 or tap top button for Normal Mode. '
-            'Press 2 or tap bottom button for Visually Impaired mode.',
+            'Mode selection. Tap top button for Normal Mode. '
+            'Tap bottom button for Visually Impaired mode.',
           );
           return KeyEventResult.handled;
         }

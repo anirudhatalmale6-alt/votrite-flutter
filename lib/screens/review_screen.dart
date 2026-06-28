@@ -48,8 +48,8 @@ class _ReviewScreenState extends State<ReviewScreen> {
       'Review your votes. ${provider.raceResults.length} races'
       '${provider.propositions.isNotEmpty ? " and ${provider.propositions.length} propositions" : ""}. '
       '${summary.join(". ")}. '
-      'Tap any item to change your vote. Swipe left or press J to cast ballot. '
-      'Press S to hear this summary again. Press L for help.',
+      'Tap any item to change your vote. '
+      'Swipe left to cast your ballot.',
     );
   }
 
@@ -141,8 +141,8 @@ class _ReviewScreenState extends State<ReviewScreen> {
     }
     if (key == LogicalKeyboardKey.keyL) {
       TtsService().speak(
-        'Review screen. Arrow keys to navigate. S to hear details. '
-        'F to change a race vote. J or Enter to cast ballot.',
+        'Review screen. Tap any item to change your vote. '
+        'Swipe left to cast your ballot.',
       );
       return KeyEventResult.handled;
     }

@@ -40,9 +40,8 @@ class _PropositionScreenState extends State<PropositionScreen> {
       'Proposition ${_currentPropIndex + 1} of ${provider.propositions.length}. '
       '${prop.propTitle}. ${prop.propText}. '
       '$currentVote. '
-      'Tap ${prop.yesLabel} or ${prop.noLabel} on screen, or press F for ${prop.yesLabel}, K for ${prop.noLabel}. '
-      'Swipe left or press J for next. Swipe right or press D for previous. '
-      'Press L to hear these instructions again.',
+      'Tap ${prop.yesLabel} or ${prop.noLabel} to vote. '
+      'Swipe left for next. Swipe right for previous.',
     );
   }
 
@@ -107,8 +106,8 @@ class _PropositionScreenState extends State<PropositionScreen> {
       final provider = context.read<VotingProvider>();
       final prop = provider.propositions[_currentPropIndex];
       TtsService().speak(
-        'Proposition screen. F for ${prop.yesLabel}. K for ${prop.noLabel}. '
-        'J for next. D for previous. S to re-read.',
+        'Proposition screen. Tap ${prop.yesLabel} or ${prop.noLabel} to vote. '
+        'Swipe left for next. Swipe right for previous.',
       );
       return KeyEventResult.handled;
     }

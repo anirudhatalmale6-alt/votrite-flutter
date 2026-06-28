@@ -93,9 +93,8 @@ class _RaceScreenState extends State<RaceScreen> {
       'Vote for no more than ${race.maxNumOfVotes}. '
       'Candidates listed: $numberedCandidates. '
       'You have $remaining choice${remaining != 1 ? "s" : ""} remaining. '
-      'Tap a candidate to select them, or swipe left for next race, swipe right to go back. '
-      'With keyboard: F to select, arrow keys to navigate, J when done. '
-      'Press L to hear these instructions again.',
+      'Tap a candidate to select them. '
+      'Swipe left for next race, swipe right to go back.',
     );
   }
 
@@ -338,11 +337,9 @@ class _RaceScreenState extends State<RaceScreen> {
       final race = provider.currentRace;
       var help = 'Candidate selection screen. '
         'Tap a candidate to select or deselect them. '
-        'Swipe left for next race, swipe right to go back. '
-        'With keyboard: Arrow keys to navigate. F to select. '
-        'K to deselect. J for next race. D to go back. S to hear selections.';
+        'Swipe left for next race, swipe right to go back.';
       if (race != null && race.maxNumOfWriteIns > 0) {
-        help += ' W to write in a candidate.';
+        help += ' Tap the write-in button at the bottom to add a candidate.';
       }
       TtsService().speak(help);
       return KeyEventResult.handled;

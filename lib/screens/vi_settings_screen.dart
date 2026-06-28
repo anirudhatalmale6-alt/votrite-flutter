@@ -26,8 +26,7 @@ class _VISettingsScreenState extends State<VISettingsScreen> {
       TtsService().speak(
         'Accessibility settings. '
         'Adjust your voice speed and text size before voting. '
-        'Use the sliders to change settings, then tap Continue at the bottom. '
-        'Press L for help.',
+        'Use the sliders to change settings, then tap Continue at the bottom.',
       );
     });
   }

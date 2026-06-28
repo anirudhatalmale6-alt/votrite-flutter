@@ -31,8 +31,7 @@ class _LoginScreenState extends State<LoginScreen> {
         'Secure voter login. '
         'Tap the PIN field in the center of the screen to open the number pad. '
         'Type your 5 digit PIN. The app will log you in automatically after you enter your PIN. '
-        'Or swipe left after entering your PIN to log in. '
-        'Press L to hear these instructions again.',
+        'Or swipe left after entering your PIN to log in.',
       );
     });
   }
@@ -120,7 +119,7 @@ class _LoginScreenState extends State<LoginScreen> {
           TtsService().speak(
             'Login screen. Tap the PIN field to open the number pad. '
             'Type your PIN digits. The app logs in automatically. '
-            'Press Enter to login manually.',
+            'Or swipe left to log in.',
           );
           return KeyEventResult.handled;
         }
