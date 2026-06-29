@@ -38,6 +38,7 @@ class VotingProvider extends ChangeNotifier {
   bool isSubmitting = false;
   bool accessibilityMode = false;
   double viZoomScale = 1.3;
+  String selectedLanguage = 'en';
 
   Race? get currentRace =>
       currentRaceIndex < races.length ? races[currentRaceIndex] : null;
@@ -59,6 +60,11 @@ class VotingProvider extends ChangeNotifier {
 
   void setViZoomScale(double scale) {
     viZoomScale = scale;
+    notifyListeners();
+  }
+
+  void setLanguage(String lang) {
+    selectedLanguage = lang;
     notifyListeners();
   }
 
@@ -209,6 +215,7 @@ class VotingProvider extends ChangeNotifier {
     isReviewMode = false;
     isSubmitting = false;
     viZoomScale = 1.3;
+    selectedLanguage = 'en';
     notifyListeners();
   }
 }

@@ -4,7 +4,7 @@ import 'package:provider/provider.dart';
 import '../providers/voting_provider.dart';
 import '../theme.dart';
 import '../services/tts_service.dart';
-import 'mode_screen.dart';
+import 'language_screen.dart';
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({super.key});
@@ -46,7 +46,7 @@ class _SplashScreenState extends State<SplashScreen>
       if (mounted) {
         Navigator.pushReplacement(
           context,
-          MaterialPageRoute(builder: (_) => const ModeScreen()),
+          MaterialPageRoute(builder: (_) => const LanguageScreen()),
         );
       }
     });
