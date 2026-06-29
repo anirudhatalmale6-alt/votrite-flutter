@@ -16,9 +16,9 @@ class _LanguageScreenState extends State<LanguageScreen> {
   String? _selectedLang;
 
   static const _languages = [
-    {'code': 'en', 'name': 'English', 'flag': '🇺🇸'},
-    {'code': 'es', 'name': 'Español', 'flag': '🇪🇸'},
-    {'code': 'zh-CN', 'name': '中文', 'flag': '🇨🇳'},
+    {'code': 'en', 'name': 'English', 'native': 'English', 'flag': '🇺🇸'},
+    {'code': 'es', 'name': 'Español', 'native': 'Spanish', 'flag': '🇪🇸'},
+    {'code': 'zh-CN', 'name': '中文', 'native': 'Chinese', 'flag': '🇨🇳'},
   ];
 
   @override
@@ -52,82 +52,83 @@ class _LanguageScreenState extends State<LanguageScreen> {
           gradient: LinearGradient(
             begin: Alignment.topCenter,
             end: Alignment.bottomCenter,
-            colors: [Color(0xFFF8F9FA), Color(0xFFE8EAF6)],
+            colors: [Color(0xFF0A2463), Color(0xFF1565C0)],
           ),
         ),
         child: SafeArea(
           child: Column(
             children: [
-              const SizedBox(height: 40),
+              const SizedBox(height: 32),
               Image.asset(
                 'assets/images/votrite_logo.png',
-                width: 80,
-                height: 80,
+                width: 64,
+                height: 64,
                 errorBuilder: (_, __, ___) => const Icon(
                   Icons.how_to_vote,
-                  size: 64,
-                  color: VotRiteTheme.darkBlue,
+                  size: 48,
+                  color: Colors.white,
+                ),
+              ),
+              const SizedBox(height: 16),
+              const Text(
+                'VotRite',
+                style: TextStyle(
+                  fontSize: 18,
+                  fontWeight: FontWeight.w700,
+                  color: Colors.white,
+                  letterSpacing: 2,
                 ),
               ),
               const SizedBox(height: 24),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Image.asset(
-                    'assets/images/thamb.png',
-                    width: 32,
-                    height: 32,
-                    errorBuilder: (_, __, ___) => const Icon(
-                      Icons.translate,
-                      size: 28,
-                      color: VotRiteTheme.primaryBlue,
+              Container(
+                margin: const EdgeInsets.symmetric(horizontal: 40),
+                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                decoration: BoxDecoration(
+                  color: Colors.white.withOpacity(0.15),
+                  borderRadius: BorderRadius.circular(20),
+                ),
+                child: const Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Icon(Icons.translate, size: 16, color: Colors.white70),
+                    SizedBox(width: 8),
+                    Text(
+                      'Select Your Language',
+                      style: TextStyle(
+                        fontSize: 14,
+                        fontWeight: FontWeight.w500,
+                        color: Colors.white,
+                        letterSpacing: 0.5,
+                      ),
                     ),
-                  ),
-                  const SizedBox(width: 12),
-                  const Text(
-                    'Choose Language',
-                    style: TextStyle(
-                      fontSize: 24,
-                      fontWeight: FontWeight.w600,
-                      color: VotRiteTheme.darkBlue,
-                    ),
-                  ),
-                ],
-              ),
-              const SizedBox(height: 8),
-              Text(
-                'Select your preferred language',
-                style: TextStyle(
-                  fontSize: 14,
-                  color: Colors.grey[600],
+                  ],
                 ),
               ),
-              const SizedBox(height: 40),
-              Expanded(
-                child: Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 32),
-                  child: Column(
-                    children: [
-                      for (int i = 0; i < _languages.length; i++) ...[
-                        _buildLanguageOption(
-                          index: i + 1,
-                          code: _languages[i]['code']!,
-                          name: _languages[i]['name']!,
-                          flag: _languages[i]['flag']!,
-                        ),
-                        if (i < _languages.length - 1) const SizedBox(height: 16),
-                      ],
-                    ],
-                  ),
-                ),
-              ),
+              const SizedBox(height: 32),
               Padding(
-                padding: const EdgeInsets.only(bottom: 24),
+                padding: const EdgeInsets.symmetric(horizontal: 40),
+                child: Column(
+                  children: [
+                    for (int i = 0; i < _languages.length; i++) ...[
+                      _buildLanguageOption(
+                        code: _languages[i]['code']!,
+                        name: _languages[i]['name']!,
+                        native: _languages[i]['native']!,
+                        flag: _languages[i]['flag']!,
+                      ),
+                      if (i < _languages.length - 1) const SizedBox(height: 12),
+                    ],
+                  ],
+                ),
+              ),
+              const Spacer(),
+              Padding(
+                padding: const EdgeInsets.only(bottom: 20),
                 child: Text(
                   'Voterite Inc.',
                   style: TextStyle(
-                    fontSize: 12,
-                    color: Colors.grey[400],
+                    fontSize: 11,
+                    color: Colors.white.withOpacity(0.4),
                   ),
                 ),
               ),
@@ -139,9 +140,9 @@ class _LanguageScreenState extends State<LanguageScreen> {
   }
 
   Widget _buildLanguageOption({
-    required int index,
     required String code,
     required String name,
+    required String native,
     required String flag,
   }) {
     final isSelected = _selectedLang == code;
@@ -149,71 +150,46 @@ class _LanguageScreenState extends State<LanguageScreen> {
       onTap: () => _selectLanguage(code),
       child: AnimatedContainer(
         duration: const Duration(milliseconds: 200),
-        padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 20),
+        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 14),
         decoration: BoxDecoration(
-          color: isSelected
-              ? VotRiteTheme.primaryBlue.withOpacity(0.1)
-              : Colors.white,
-          borderRadius: BorderRadius.circular(16),
+          color: isSelected ? Colors.white : Colors.white.withOpacity(0.12),
+          borderRadius: BorderRadius.circular(12),
           border: Border.all(
-            color: isSelected ? VotRiteTheme.primaryBlue : Colors.grey[300]!,
-            width: isSelected ? 2 : 1,
+            color: isSelected ? Colors.white : Colors.white.withOpacity(0.25),
+            width: 1.5,
           ),
-          boxShadow: [
-            BoxShadow(
-              color: isSelected
-                  ? VotRiteTheme.primaryBlue.withOpacity(0.15)
-                  : Colors.black.withOpacity(0.04),
-              blurRadius: isSelected ? 12 : 6,
-              offset: const Offset(0, 3),
-            ),
-          ],
         ),
         child: Row(
           children: [
-            Container(
-              width: 36,
-              height: 36,
-              decoration: BoxDecoration(
-                shape: BoxShape.circle,
-                color: isSelected
-                    ? VotRiteTheme.primaryBlue
-                    : Colors.grey[100],
-              ),
-              child: Center(
-                child: isSelected
-                    ? const Icon(Icons.check, color: Colors.white, size: 20)
-                    : Text(
-                        '$index',
-                        style: TextStyle(
-                          fontSize: 16,
-                          fontWeight: FontWeight.w600,
-                          color: Colors.grey[600],
-                        ),
-                      ),
-              ),
-            ),
-            const SizedBox(width: 16),
-            Text(
-              flag,
-              style: const TextStyle(fontSize: 28),
-            ),
-            const SizedBox(width: 16),
-            Text(
-              name,
-              style: TextStyle(
-                fontSize: 20,
-                fontWeight: isSelected ? FontWeight.w700 : FontWeight.w500,
-                color: isSelected
-                    ? VotRiteTheme.primaryBlue
-                    : VotRiteTheme.darkGray,
-              ),
+            Text(flag, style: const TextStyle(fontSize: 22)),
+            const SizedBox(width: 14),
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  name,
+                  style: TextStyle(
+                    fontSize: 16,
+                    fontWeight: FontWeight.w600,
+                    color: isSelected ? VotRiteTheme.darkBlue : Colors.white,
+                  ),
+                ),
+                Text(
+                  native,
+                  style: TextStyle(
+                    fontSize: 11,
+                    color: isSelected
+                        ? VotRiteTheme.darkBlue.withOpacity(0.6)
+                        : Colors.white60,
+                  ),
+                ),
+              ],
             ),
             const Spacer(),
             Icon(
-              Icons.arrow_forward_ios,
+              isSelected ? Icons.check_circle : Icons.arrow_forward_ios,
               size: 18,
-              color: isSelected ? VotRiteTheme.primaryBlue : Colors.grey[400],
+              color: isSelected ? VotRiteTheme.primaryBlue : Colors.white54,
             ),
           ],
         ),
